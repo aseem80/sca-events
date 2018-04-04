@@ -32,7 +32,6 @@ public class Sender {
     private String topic;
 
     public void send(String payload, String key) {
-        LOGGER.info("sending payload='{}' to topic='{}'", payload, topic);
         UUID uuid = UUID.randomUUID();
         Message<String> message = MessageBuilder
                 .withPayload(payload)

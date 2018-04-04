@@ -43,8 +43,6 @@ public class Receiver {
                 String payloadToSend = scaProcessor.toSCAPayload(map);
                 sender.send(payloadToSend, pair.getLeft());
             }
-            LOGGER.info("map : " + map);
-
         } catch (IOException e) {
             LOGGER.error("Error Reading payload from Kafka. StackTrace " + ExceptionUtils.getStackTrace(e));
         }
