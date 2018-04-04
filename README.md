@@ -12,7 +12,7 @@ This is java based application to be built with maven.
 
 ## Prerequisites ##
 
-Java 8, Maven
+Java 8, Maven, KAFKA Cluster URL
 
 
  ## Deployment ##
