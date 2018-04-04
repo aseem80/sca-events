@@ -3,7 +3,6 @@ package io.nordstrom.org.scaevents.config;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.nordstrom.org.scaevents.consumer.Receiver;
-import io.nordstrom.org.scaevents.util.SCAProcessor;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
