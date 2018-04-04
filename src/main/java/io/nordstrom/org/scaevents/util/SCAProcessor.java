@@ -14,7 +14,7 @@ public interface SCAProcessor {
     static final String ROOT_LEVEL_CHANGED_NODES = "rootLevelChanges";
     static final String SCA = "sca";
     static final String STORE_NUMBER = "storeNumber";
-    static final String TIMESTAMP = "timeStamp";
+    static final String TIMESTAMP = "currentDataUpdatedTimeStamp";
     static final String CURRENT_DATA = "currentData";
 
     Map<String, Object> fromCanonicalPayload(String payload) throws IOException;
