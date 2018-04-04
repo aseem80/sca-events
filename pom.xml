@@ -245,8 +245,7 @@
                     <image>${docker.image.prefix}/${project.artifactId}:${project.version}</image>
                     <newName>${docker.image.prefix}/${project.artifactId}:latest</newName>
                     <imageName>${docker.image.prefix}/${project.artifactId}:${project.version}</imageName>
-                    <entryPoint>["java", "-Xmx512m","-Djava.security.egd=file:/dev/./urandom", "-jar",
-                        "/${project.build.finalName}.jar"]
+                    <entryPoint>["java", "-Xmx512m","-Djava.security.egd=file:/dev/./urandom", "-jar","/${project.build.finalName}.jar"]
                     </entryPoint>
                     <resources>
                         <resource>
