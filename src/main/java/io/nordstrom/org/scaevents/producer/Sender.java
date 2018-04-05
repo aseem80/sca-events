@@ -8,7 +8,10 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 
+import java.io.IOException;
 import java.util.UUID;
 
 /**
@@ -31,6 +34,9 @@ public class Sender {
     @Value("${spring.kafka.producer.topic}")
     private String topic;
 
+    @Retryable(value = { IOException.class },
+            maxAttempts = 5,
+            backoff = @Backoff(delay = 1000, multiplier = 2))
     public void send(String payload, String key) {
         UUID uuid = UUID.randomUUID();
         Message<String> message = MessageBuilder

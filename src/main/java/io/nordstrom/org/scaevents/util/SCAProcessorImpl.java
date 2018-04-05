@@ -110,7 +110,7 @@ public class SCAProcessorImpl implements SCAProcessor {
 
 
         }
-        return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(payload);
+        return mapper.writeValueAsString(payload);
 
     }
 

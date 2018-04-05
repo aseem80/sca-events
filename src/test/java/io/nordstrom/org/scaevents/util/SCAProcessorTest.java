@@ -49,7 +49,6 @@ public class SCAProcessorTest {
         String scaPayload = scaProcessor.toSCAPayload(canonicalMap);
         String scaPayloadExpected = FileUtils.readFileToString(new ClassPathResource("sca_payload.json").getFile(), "UTF-8");
         assertEquals(scaPayloadExpected, scaPayload);
-
     }
 
 
