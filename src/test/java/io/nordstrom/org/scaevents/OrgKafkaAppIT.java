@@ -18,6 +18,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static org.junit.Assert.assertEquals;
@@ -52,6 +53,7 @@ public class OrgKafkaAppIT {
         String scaPayloadExpected = FileUtils.readFileToString(new ClassPathResource("sca_payload.json").getFile(), StandardCharsets.UTF_8);
         String scaPayloadActual = FileUtils.readFileToString(path.toFile(), StandardCharsets.UTF_8);
         assertEquals(scaPayloadExpected, scaPayloadActual);
+        Files.delete(path);
 
     }
 

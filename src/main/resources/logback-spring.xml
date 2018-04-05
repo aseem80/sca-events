@@ -3,7 +3,7 @@
 
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
-    <springProfile name="dev,non-prod">
+    <springProfile name="default,dev,non-prod">
         <logger name="io" level="DEBUG" additivity="false">
             <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
                 <file>${ORG_SCA_EVENTS_HOME:-/tmp}/logs/sca-events/sca-events.log</file>
@@ -118,7 +118,7 @@
         </logger>
     </springProfile>
 
-    <springProfile name="default,production">
+    <springProfile name="production">
         <logger name="io" level="INFO" additivity="false">
             <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
                 <file>${ORG_SCA_EVENTS_HOME:-/tmp}/logs/sca-events/sca-events.log</file>

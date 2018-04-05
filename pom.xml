@@ -141,37 +141,90 @@
                                 <imageTag>latest</imageTag>
                             </imageTags>
                             <exposes>
-                                <expose>8080</expose>
+                                <expose>9090</expose>
                             </exposes>
                             <cmd></cmd>
                         </configuration>
                     </plugin>
                     <plugin>
-                        <groupId>com.dkanejs.maven.plugins</groupId>
-                        <artifactId>docker-compose-maven-plugin</artifactId>
-                        <version>1.0.3</version>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>0.20.1</version>
                         <executions>
                             <execution>
-                                <id>up</id>
-                                <phase>verify</phase>
+                                <id>prepare-it-environment</id>
+                                <phase>pre-integration-test</phase>
                                 <goals>
-                                    <goal>up</goal>
+                                    <goal>start</goal>
                                 </goals>
                                 <configuration>
-                                    <composeFile>${project.basedir}/src/main/docker/docker-compose.yml</composeFile>
-                                    <detachedMode>true</detachedMode>
+                                    <images>
+                                        <image>
+                                            <name>wurstmeister/zookeeper:latest</name>
+                                            <alias>zookeeper</alias>
+                                            <run>
+                                                <ports>
+                                                    <port>2181:2181</port>
+                                                </ports>
+                                                <wait>
+                                                    <tcp>
+                                                        <ports>
+                                                            <port>2181</port>
+                                                        </ports>
+                                                    </tcp>
+                                                </wait>
+                                            </run>
+                                        </image>
+                                        <image>
+                                            <name>wurstmeister/kafka:1.0.1</name>
+                                            <alias>kafka</alias>
+                                            <run>
+                                                <dependsOn>
+                                                    <container>zookeeper</container>
+                                                </dependsOn>
+                                                <ports>
+                                                    <port>9092:9092</port>
+                                                </ports>
+                                                <env>
+                                                    <KAFKA_ADVERTISED_HOST_NAME>192.168.99.100</KAFKA_ADVERTISED_HOST_NAME>
+                                                    <KAFKA_ADVERTISED_PORT>9092</KAFKA_ADVERTISED_PORT>
+                                                    <KAFKA_ZOOKEEPER_CONNECT>192.168.99.100:2181</KAFKA_ZOOKEEPER_CONNECT>
+                                                </env>
+                                                <wait>
+                                                    <tcp>
+                                                        <ports>
+                                                            <port>9092</port>
+                                                        </ports>
+                                                    </tcp>
+                                                </wait>
+                                            </run>
+                                        </image>
+                                        <image>
+                                            <name>${docker.image.prefix}/${project.artifactId}:${project.version}</name>
+                                            <alias>sca-events</alias>
+                                            <run>
+                                                <dependsOn>
+                                                    <container>kafka</container>
+                                                    <container>zookeeper</container>
+                                                </dependsOn>
+                                                <ports>
+                                                    <port>9090:9090</port>
+                                                </ports>
+                                                <env>
+                                                    <SPRING_KAFKA_PRODUCER_BOOTSTRAP-SERVERS>192.168.99.100:9092</SPRING_KAFKA_PRODUCER_BOOTSTRAP-SERVERS>
+                                                    <SPRING_KAFKA_CONSUMER_BOOTSTRAP-SERVERS>192.168.99.100:9092</SPRING_KAFKA_CONSUMER_BOOTSTRAP-SERVERS>
+                                                </env>
+                                            </run>
+                                        </image>
+                                    </images>
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>down</id>
-                                <phase>verify</phase>
+                                <id>remove-it-database</id>
+                                <phase>post-integration-test</phase>
                                 <goals>
-                                    <goal>down</goal>
+                                    <goal>stop</goal>
                                 </goals>
-                                <configuration>
-                                    <composeFile>${project.basedir}/src/main/docker/docker-compose.yml</composeFile>
-                                    <removeVolumes>true</removeVolumes>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
