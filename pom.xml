@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>io.nordstrom.org</groupId>
+    <artifactId>sca-events</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <spring.boot.version>2.0.0.RELEASE</spring.boot.version>
+        <spring-kafka.version>2.0.0.RELEASE</spring-kafka.version>
+        <docker.image.prefix>org</docker.image.prefix>
+        <avro.version>1.8.2</avro.version>
+        <scmUser>place-holder</scmUser> <!-- Passed in via command line -->
+        <scmPass>place-holder</scmPass> <!-- Passed in via command line -->
+    </properties>
+
+    <scm>
+        <!-- Automated versioning fails without including username/password, -->
+        <!-- but we don't want clear-text passwords here. -->
+        <!-- Hence we use properties that must be overridden in order to use them. -->
+        <developerConnection>scm:git:https://${scmUser}:${scmPass}@gitlab.nordstrom.com/ORG/sca-events.git
+        </developerConnection>
+        <!-- Just a placeholder, maven-release:prepare overrides this -->
+        <tag>sca-events-1.0.0</tag>
+    </scm>
+
+    <repositories>
+        <repository>
+            <id>central</id>
+            <name>Maven Repository Switchboard</name>
+            <layout>default</layout>
+            <url>http://repo1.maven.org/maven2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>spray</id>
+            <name>Spray</name>
+            <url>http://repo.spray.io</url>
+        </repository>
+        <repository>
+            <id>nordstrom-repo</id>
+            <name>Nordstrom Repository</name>
+            <url>https://mvnrepo.nordstrom.net/nexus/content/groups/public</url>
+        </repository>
+    </repositories>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.0.0.RELEASE</version>
+    </parent>
+    <name>csa-events</name>
+    <profiles>
+        <!-- The Configuration of the development profile -->
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <!--
+                    Specifies the build.profile.id property that must be equal than the name of
+                    the directory that contains the profile specific configuration file.
+                    Because the name of the directory that contains the configuration file of the
+                    development profile is dev, we must set the value of the build.profile.id
+                    property to dev.
+                -->
+                <build.profile.id>dev</build.profile.id>
+                <!--
+                    Only unit tests are run when the development profile is active
+                -->
+                <skip.integration.tests>true</skip.integration.tests>
+                <skip.unit.tests>false</skip.unit.tests>
+            </properties>
+        </profile>
+        <!-- The Configuration of the integration-test profile -->
+        <profile>
+            <id>integration-test</id>
+            <properties>
+                <!--
+                    Specifies the build.profile.id property that must be equal than the name of
+                    the directory that contains the profile specific configuration file.
+                    Because the name of the directory that contains the configuration file of the
+                    integration-test profile is integration-test, we must set the value of the
+                    build.profile.id property to integration-test.
+                -->
+                <build.profile.id>integration-test</build.profile.id>
+                <!--
+                    Only integration tests are run when the integration-test profile is active
+                -->
+                <skip.integration.tests>false</skip.integration.tests>
+                <skip.unit.tests>true</skip.unit.tests>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.spotify</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>0.4.13</version>
+                        <executions>
+                            <execution>
+                                <id>build-image</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>tag-image</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>tag</goal>
+                                </goals>
+                                <configuration>
+                                    <image>${docker.image.prefix}/${project.artifactId}:${project.version}</image>
+                                    <newName>${docker.image.prefix}/${project.artifactId}:latest</newName>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <baseImage>frolvlad/alpine-oraclejdk8:slim</baseImage>
+                            <image>${docker.image.prefix}/${project.artifactId}:${project.version}</image>
+                            <newName>${docker.image.prefix}/${project.artifactId}:latest</newName>
+                            <imageName>${docker.image.prefix}/${project.artifactId}:${project.version}</imageName>
+                            <entryPoint>["java", "-Xmx512m","-Djava.security.egd=file:/dev/./urandom", "-jar","/${project.build.finalName}.jar"]
+                            </entryPoint>
+                            <resources>
+                                <resource>
+                                    <targetPath>/</targetPath>
+                                    <directory>${project.build.directory}</directory>
+                                    <include>${project.build.finalName}.jar</include>
+                                </resource>
+                            </resources>
+                            <imageTags>
+                                <imageTag>${project.version}</imageTag>
+                                <imageTag>latest</imageTag>
+                            </imageTags>
+                            <exposes>
+                                <expose>9090</expose>
+                            </exposes>
+                            <cmd></cmd>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>0.20.1</version>
+                        <executions>
+                            <execution>
+                                <id>prepare-it-environment</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>start</goal>
+                                </goals>
+                                <configuration>
+                                    <images>
+                                        <image>
+                                            <name>wurstmeister/zookeeper:latest</name>
+                                            <alias>zookeeper</alias>
+                                            <run>
+                                                <ports>
+                                                    <port>2181:2181</port>
+                                                </ports>
+                                                <wait>
+                                                    <tcp>
+                                                        <ports>
+                                                            <port>2181</port>
+                                                        </ports>
+                                                    </tcp>
+                                                </wait>
+                                            </run>
+                                        </image>
+                                        <image>
+                                            <name>wurstmeister/kafka:1.0.1</name>
+                                            <alias>kafka</alias>
+                                            <run>
+                                                <dependsOn>
+                                                    <container>zookeeper</container>
+                                                </dependsOn>
+                                                <ports>
+                                                    <port>9092:9092</port>
+                                                </ports>
+                                                <env>
+                                                    <KAFKA_ADVERTISED_HOST_NAME>192.168.99.100</KAFKA_ADVERTISED_HOST_NAME>
+                                                    <KAFKA_ADVERTISED_PORT>9092</KAFKA_ADVERTISED_PORT>
+                                                    <KAFKA_ZOOKEEPER_CONNECT>192.168.99.100:2181</KAFKA_ZOOKEEPER_CONNECT>
+                                                </env>
+                                                <wait>
+                                                    <tcp>
+                                                        <ports>
+                                                            <port>9092</port>
+                                                        </ports>
+                                                    </tcp>
+                                                </wait>
+                                            </run>
+                                        </image>
+                                        <image>
+                                            <name>${docker.image.prefix}/${project.artifactId}:${project.version}</name>
+                                            <alias>sca-events</alias>
+                                            <run>
+                                                <dependsOn>
+                                                    <container>kafka</container>
+                                                    <container>zookeeper</container>
+                                                </dependsOn>
+                                                <ports>
+                                                    <port>9090:9090</port>
+                                                </ports>
+                                                <env>
+                                                    <SPRING_KAFKA_PRODUCER_BOOTSTRAP-SERVERS>192.168.99.100:9092</SPRING_KAFKA_PRODUCER_BOOTSTRAP-SERVERS>
+                                                    <SPRING_KAFKA_CONSUMER_BOOTSTRAP-SERVERS>192.168.99.100:9092</SPRING_KAFKA_CONSUMER_BOOTSTRAP-SERVERS>
+                                                </env>
+                                            </run>
+                                        </image>
+                                    </images>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>remove-it-database</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>stop</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <executions>
+                            <!--
+                                Invokes both the integration-test and the verify goals of the
+                                Failsafe Maven plugin
+                            -->
+                            <execution>
+                                <id>integration-tests</id>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                                <configuration>
+                                    <!--
+                                        Skips integration tests if the value of skip.integration.tests
+                                        property is true
+                                    -->
+                                    <skipTests>${skip.integration.tests}</skipTests>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <dependencies>
+
+        <!-- spring-boot -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-aop -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+
+
+        <!-- spring-kafka -->
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+            <version>${spring-kafka.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework.retry/spring-retry -->
+        <dependency>
+            <groupId>org.springframework.retry</groupId>
+            <artifactId>spring-retry</artifactId>
+            <version>1.2.2.RELEASE</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.7</version>
+        </dependency>
+
+
+        <!-- avro -->
+        <dependency>
+            <groupId>org.apache.avro</groupId>
+            <artifactId>avro</artifactId>
+            <version>${avro.version}</version>
+        </dependency>
+
+        <!--Testing -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka-test</artifactId>
+            <version>${spring-kafka.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.6</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.dkanejs.maven.plugins</groupId>
+            <artifactId>docker-compose-maven-plugin</artifactId>
+            <version>1.0.3</version>
+        </dependency>
+
+
+        <!--Metrics -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.6.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                            <Implementation-Title>${project.name}</Implementation-Title>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <!-- The build helper determines the build version -->
+                <!-- 'mvn build-helper:parse-version' -->
+                <!-- this is stored in the POM context as "parsedVersion" -->
+                <!-- We need this in order to output our current version without the -SNAPSHOT suffix -->
+                <!-- as part of our git/docker/beanstalk version tagging strategy -->
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.10</version>
+                <executions>
+                    <execution>
+                        <id>parse-version</id>
+                        <goals>
+                            <goal>parse-version</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.4.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <executable>echo</executable>
+                    <arguments>
+                        <argument>
+                            <!-- These properties are set by build-helper:parse-version -->
+                            ${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}
+                        </argument>
+                    </arguments>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+
+</project>

@@ -1,0 +1,98 @@
+{
+  "storeNumber": "1",
+  "currentDataUpdatedTimeStamp": "<dateTime in millisecond or nanosecond format>",
+  "rootLevelChanges": [
+    {
+      "attribute": "name"
+    },
+    {
+      "node": "adminHier"
+    },
+    {
+      "node": "dc"
+    },
+    {
+      "node": "detailedStoreHours"
+    },
+    {
+      "node": "eligiblityTypes"
+    },
+    {
+      "node": "functionTypes"
+    },
+    {
+      "node": "locationAmenities"
+    },
+    {
+      "node": "postalAddress"
+    },
+    {
+      "node": "sca"
+    },
+    {
+      "node": "storeReserveAreaInfo"
+    },
+    {
+      "node": "telephone"
+    },
+    {
+      "node": "etcEtc"
+    }
+  ],
+  "currentData": {
+    "storeNumber": "1",
+    "name": "DOWNTOWN SEATTLE",
+    "displayName": "Nordstrom Downtown Seattle",
+    "typeCode": "FL",
+    "typeDesc": "MAIN LINE",
+    "typeIsSellingStore": true,
+    "typeIsInventoryStore": true,
+    "typeCategoryCode": "SE",
+    "typeCategoryDesc": "SELLING",
+    "compStatusCode": "CP",
+    "compStatusDesc": "COMP",
+    "isStoreOperationalToPublic": true,
+    "locationTypeCode": "R",
+    "locationTypeDesc": "RETAIL/ OFFICE",
+    "ownershipTypeCode": "O",
+    "ownershipTypeDesc": "OWNED",
+    "timeZoneName": "America/Los_Angeles",
+    "adminHier": {
+      "entNumber": "1000",
+      "entDesc": "NORDSTROM",
+      "buNumber": "1000",
+      "buDesc": "FULL LINE",
+      "groupNumber": "100",
+      "groupDesc": "FULL LINE STORES",
+      "subGroupNumber": "100",
+      "subGroupDesc": "NORTHWEST FLS",
+      "regionNumber": "10",
+      "regionDesc": "WASHINGTON/ALASKA FULL LINE"
+    },
+    "dc": {
+      "storeNumber": "89",
+      "name": "PORTLAND DC"
+    },
+    "etc": {
+      "etc": "etc"
+    },
+    "sca": {
+      "name": "DOWNTOWN SEATTLE",
+      "typeCode": "FL",
+      "buNumber": "1000",
+      "origCountryCode": "US",
+      "stdzdPostalCode": "981011744",
+      "eligibilityTypes": [
+        {
+          "code": "BPUS"
+        },
+        {
+          "code": "SSUS"
+        },
+        {
+          "code": "SSCA"
+        }
+      ]
+    }
+  }
+}
