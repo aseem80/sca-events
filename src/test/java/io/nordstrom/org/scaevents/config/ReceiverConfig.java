@@ -30,6 +30,8 @@ import java.util.Map;
 public class ReceiverConfig {
 
 
+    private static final String AUTO_OFFSET_RESET_CONFIG_VALUE = "earliest";
+
     @Value("${spring.kafka.consumer.bootstrap-servers}")
     private String bootstrapServers;
 
@@ -47,7 +49,7 @@ public class ReceiverConfig {
         // allows a pool of processes to divide the work of consuming and processing records
         props.put(ConsumerConfig.GROUP_ID_CONFIG, consumerGroupId);
         // automatically reset the offset to the earliest offset
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, AUTO_OFFSET_RESET_CONFIG_VALUE);
         return props;
     }
 
