@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -21,6 +22,8 @@ import static org.junit.Assert.assertTrue;
 /**
  * Created by bmwi on 4/4/18.
  */
+
+
 public class CanaryReceiver {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CanaryReceiver.class);

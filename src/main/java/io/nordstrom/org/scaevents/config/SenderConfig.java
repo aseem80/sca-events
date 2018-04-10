@@ -1,6 +1,6 @@
-package io.nordstrom.org.scaevents.integration.config;
+package io.nordstrom.org.scaevents.config;
 
-import io.nordstrom.org.scaevents.integration.producer.Sender;
+import io.nordstrom.org.scaevents.producer.Sender;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,9 +43,5 @@ public class SenderConfig {
         return new KafkaTemplate<>(producerFactory());
     }
 
-    @Bean
-    public Sender sender() {
-        return new Sender();
-    }
 
 }

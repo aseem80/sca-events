@@ -18,7 +18,7 @@ import java.util.Map;
  */
 
 @TestConfiguration
-public class SenderConfig {
+public class CanarySenderConfig {
 
     @Value("${spring.kafka.producer.bootstrap-servers}")
     private String bootstrapServers;

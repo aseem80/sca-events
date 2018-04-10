@@ -1,4 +1,4 @@
-package io.nordstrom.org.scaevents.integration.producer;
+package io.nordstrom.org.scaevents.producer;
 
 import io.nordstrom.org.scaevents.dao.PayloadDao;
 import org.slf4j.Logger;
@@ -11,6 +11,7 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -18,6 +19,8 @@ import java.util.UUID;
 /**
  * Created by bmwi on 4/3/18.
  */
+
+@Component
 public class Sender {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Sender.class);

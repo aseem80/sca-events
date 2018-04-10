@@ -1,4 +1,4 @@
-package io.nordstrom.org.scaevents.integration.config;
+package io.nordstrom.org.scaevents.config;
 
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.regions.Regions;
@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
@@ -26,6 +27,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Configuration
 @EnableRetry
 @EnableAsync
+@ComponentScan("io.nordstrom.org.scaevents")
 public class OrgKafkaAppConfig implements AsyncConfigurer{
 
     @Autowired

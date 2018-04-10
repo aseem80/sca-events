@@ -3,7 +3,6 @@ package io.nordstrom.org.scaevents.integration.config;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.nordstrom.org.scaevents.integration.consumer.CanaryReceiver;
-import io.nordstrom.org.scaevents.integration.consumer.Receiver;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,7 +24,7 @@ import java.util.Map;
 
 @TestConfiguration
 @EnableKafka
-public class ReceiverConfig {
+public class CanaryReceiverConfig {
 
 
     private static final String AUTO_OFFSET_RESET_CONFIG_VALUE = "earliest";

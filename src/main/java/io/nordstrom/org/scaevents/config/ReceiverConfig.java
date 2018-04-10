@@ -1,8 +1,8 @@
-package io.nordstrom.org.scaevents.integration.config;
+package io.nordstrom.org.scaevents.config;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.nordstrom.org.scaevents.integration.consumer.Receiver;
+import io.nordstrom.org.scaevents.consumer.Receiver;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +14,6 @@ import org.springframework.kafka.config.KafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -70,9 +69,6 @@ public class ReceiverConfig {
         mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false).configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         return mapper;
     }
-    @Bean
-    public Receiver receiver() {
-        return new Receiver();
-    }
+
 
 }
