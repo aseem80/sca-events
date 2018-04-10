@@ -1,6 +1,6 @@
-package io.nordstrom.org.scaevents.consumer;
+package io.nordstrom.org.scaevents.integration.consumer;
 
-import io.nordstrom.org.scaevents.producer.Sender;
+import io.nordstrom.org.scaevents.integration.producer.Sender;
 import io.nordstrom.org.scaevents.util.SCAProcessor;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -34,7 +34,7 @@ public class Receiver {
 
     @KafkaListener(topics = "${spring.kafka.consumer.topic}")
     public void receive(String payload) {
-        LOGGER.info("received payload='{}'");
+        LOGGER.info("received payload");
         try {
             Map<String, Object> map = scaProcessor.fromCanonicalPayload(payload);
             Pair<String,Boolean> pair = scaProcessor.isSCANodeChanged(map);

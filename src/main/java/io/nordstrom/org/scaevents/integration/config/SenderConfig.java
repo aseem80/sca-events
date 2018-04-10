@@ -1,11 +1,9 @@
-package io.nordstrom.org.scaevents.config;
+package io.nordstrom.org.scaevents.integration.config;
 
-import io.nordstrom.org.scaevents.producer.CanarySender;
-import io.nordstrom.org.scaevents.producer.Sender;
+import io.nordstrom.org.scaevents.integration.producer.Sender;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
@@ -19,7 +17,7 @@ import java.util.Map;
  * Created by bmwi on 4/3/18.
  */
 
-@TestConfiguration
+@Configuration
 public class SenderConfig {
 
     @Value("${spring.kafka.producer.bootstrap-servers}")
@@ -46,8 +44,8 @@ public class SenderConfig {
     }
 
     @Bean
-    public CanarySender canarySender() {
-        return new CanarySender();
+    public Sender sender() {
+        return new Sender();
     }
 
 }

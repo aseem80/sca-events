@@ -1,22 +1,20 @@
-package io.nordstrom.org.scaevents.config;
+package io.nordstrom.org.scaevents.integration.config;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.nordstrom.org.scaevents.consumer.CanaryReceiver;
-import io.nordstrom.org.scaevents.consumer.Receiver;
+import io.nordstrom.org.scaevents.integration.consumer.CanaryReceiver;
+import io.nordstrom.org.scaevents.integration.consumer.Receiver;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.config.KafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
-import org.springframework.retry.annotation.EnableRetry;
 
 import java.util.HashMap;
 import java.util.Map;

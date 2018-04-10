@@ -1,15 +1,9 @@
-package io.nordstrom.org.scaevents.producer;
+package io.nordstrom.org.scaevents.integration.producer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.KafkaHeaders;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.support.MessageBuilder;
-
-import java.util.UUID;
 
 /**
  * Created by bmwi on 4/4/18.

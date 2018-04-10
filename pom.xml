@@ -54,7 +54,7 @@
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.0.0.RELEASE</version>
     </parent>
-    <name>csa-events</name>
+    <name>sca-events</name>
     <profiles>
         <!-- The Configuration of the development profile -->
         <profile>
@@ -308,6 +308,15 @@
             <version>${avro.version}</version>
         </dependency>
 
+
+        <!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-s3 -->
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-s3</artifactId>
+            <version>1.11.312</version>
+        </dependency>
+
+
         <!--Testing -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -328,11 +337,6 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>com.dkanejs.maven.plugins</groupId>
-            <artifactId>docker-compose-maven-plugin</artifactId>
-            <version>1.0.3</version>
-        </dependency>
 
 
         <!--Metrics -->
