@@ -34,7 +34,7 @@ public class Receiver {
 
     @KafkaListener(topics = "${spring.kafka.consumer.topic}")
     public void receive(String payload) {
-        LOGGER.info("received payload='{}'");
+        LOGGER.info("received payload");
         try {
             Map<String, Object> map = scaProcessor.fromCanonicalPayload(payload);
             Pair<String,Boolean> pair = scaProcessor.isSCANodeChanged(map);

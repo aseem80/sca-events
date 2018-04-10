@@ -10,6 +10,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Map;
 
@@ -31,24 +32,24 @@ public class SCAProcessorTest {
 
     @Test
     public void isSCANodeChangedWithChange() throws IOException{
-        String canonicalPayload = FileUtils.readFileToString(new ClassPathResource("payload_sca_change.json").getFile(), "UTF-8");
+        String canonicalPayload = FileUtils.readFileToString(new ClassPathResource("payload_sca_change.json").getFile(), StandardCharsets.UTF_8);
         Pair<String, Boolean> result = scaProcessor.isSCANodeChanged(scaProcessor.fromCanonicalPayload(canonicalPayload));
         assertTrue(result.getRight());
     }
 
     @Test
     public void isSCANodeChangedNoChange() throws IOException{
-        String canonicalPayload = FileUtils.readFileToString(new ClassPathResource("payload_sca_no_change.json").getFile(), "UTF-8");
+        String canonicalPayload = FileUtils.readFileToString(new ClassPathResource("payload_sca_no_change.json").getFile(), StandardCharsets.UTF_8);
         Pair<String, Boolean> result = scaProcessor.isSCANodeChanged(scaProcessor.fromCanonicalPayload(canonicalPayload));
         assertFalse(result.getRight());
     }
 
     @Test
     public void toSCAPayload() throws IOException{
-        String canonicalPayload = FileUtils.readFileToString(new ClassPathResource("payload_sca_change.json").getFile(), "UTF-8");
+        String canonicalPayload = FileUtils.readFileToString(new ClassPathResource("payload_sca_change.json").getFile(), StandardCharsets.UTF_8);
         Map<String,Object> canonicalMap = scaProcessor.fromCanonicalPayload(canonicalPayload);
         String scaPayload = scaProcessor.toSCAPayload(canonicalMap);
-        String scaPayloadExpected = FileUtils.readFileToString(new ClassPathResource("sca_payload.json").getFile(), "UTF-8");
+        String scaPayloadExpected = FileUtils.readFileToString(new ClassPathResource("sca_payload.json").getFile(), StandardCharsets.UTF_8);
         assertEquals(scaPayloadExpected, scaPayload);
     }
 

@@ -25,7 +25,6 @@ import java.util.Map;
 
 @Configuration
 @EnableKafka
-@EnableRetry
 public class ReceiverConfig {
 
 
