@@ -1,9 +1,9 @@
-package io.nordstrom.org.scaevents;
+package io.nordstrom.org.scaevents.integration;
 
-import io.nordstrom.org.scaevents.config.ReceiverConfig;
-import io.nordstrom.org.scaevents.config.SenderConfig;
-import io.nordstrom.org.scaevents.consumer.CanaryReceiver;
-import io.nordstrom.org.scaevents.producer.CanarySender;
+
+import io.nordstrom.org.scaevents.integration.config.ReceiverConfig;
+import io.nordstrom.org.scaevents.integration.config.SenderConfig;
+import io.nordstrom.org.scaevents.integration.producer.CanarySender;
 import io.nordstrom.org.scaevents.util.OrgKafkaAppTestUtil;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
@@ -15,7 +15,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-
+import io.nordstrom.org.scaevents.integration.consumer.CanaryReceiver;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;

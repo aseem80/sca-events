@@ -1,5 +1,6 @@
-package io.nordstrom.org.scaevents.util;
+package io.nordstrom.org.scaevents.unit;
 
+import io.nordstrom.org.scaevents.util.SCAProcessor;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
@@ -11,7 +12,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
