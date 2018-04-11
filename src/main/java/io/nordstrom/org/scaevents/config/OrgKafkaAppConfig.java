@@ -1,6 +1,9 @@
 package io.nordstrom.org.scaevents.config;
 
+import com.amazonaws.auth.AWSCredentialsProviderChain;
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
+import com.amazonaws.auth.InstanceProfileCredentialsProvider;
+import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
@@ -39,11 +42,25 @@ public class OrgKafkaAppConfig implements AsyncConfigurer{
     private int maxpool;
     @Value("${sca.payload-log.threadPool.queuecapacity:2000}")
     private int queuecapacity;
+    @Value("${scaevents.aws.infra.mode}")
+    private boolean awsInfraMode;
+    @Value("${scaevents.aws.s3.profile}")
+    private String awsProfile;
+
 
 
     @Bean
+    public AWSCredentialsProviderChain awsCredentialsProviderChain() {
+        if(awsInfraMode) {
+            return DefaultAWSCredentialsProviderChain.getInstance();
+        } else {
+            return new AWSCredentialsProviderChain(new ProfileCredentialsProvider(awsProfile));
+        }
+    }
+
+    @Bean
     public AmazonS3 s3Client() {
-        AmazonS3 s3Client = AmazonS3ClientBuilder.standard().withCredentials(DefaultAWSCredentialsProviderChain.getInstance()).withRegion(Regions.US_WEST_2).build();
+        AmazonS3 s3Client = AmazonS3ClientBuilder.standard().withCredentials(awsCredentialsProviderChain()).withRegion(Regions.US_WEST_2).build();
         return s3Client;
     }
 
