@@ -77,7 +77,7 @@ public class S3Dao implements PayloadDao {
         Date date = Date.from(utc.toInstant());
         String datePart = sdf.format(date);
         StringBuilder keyPrefix = new StringBuilder(KEY_PREFIX).append(datePart);
-        String key = keyPrefix.append(PATH_SEPARATOR).append(uuid).append(KEY_SEPARATOR).append(utc.getNano()).toString();
+        String key = keyPrefix.append(PATH_SEPARATOR).append(uuid).append(KEY_SEPARATOR).append(date.getTime()).toString();
         return s3Client.putObject(bucketName, key, new ByteArrayInputStream(bytes), metadata);
     }
 }

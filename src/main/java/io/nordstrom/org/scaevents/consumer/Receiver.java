@@ -9,9 +9,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
@@ -31,12 +33,16 @@ public class Receiver {
     private Sender sender;
 
 
-    private CountDownLatch latch = new CountDownLatch(1);
 
 
-    @KafkaListener(topics = "${spring.kafka.consumer.topic}")
-    public void receive(String payload) {
-        LOGGER.info("received payload");
+    @KafkaListener(id = "canonical-batch-listener", topics = "${spring.kafka.consumer.topic}")
+    public void receive(@Payload final List<String> messages) {
+        LOGGER.info("received batch of {} messages", messages.size() );
+        messages.forEach(payload -> consume(payload));
+    }
+
+
+    private void consume(String payload) {
         try {
             Map<String, Object> map = scaProcessor.fromCanonicalPayload(payload);
             Pair<String,Boolean> pair = scaProcessor.isSCANodeChanged(map);
@@ -49,7 +55,6 @@ public class Receiver {
             LOGGER.error("Error Reading payload from Kafka. StackTrace " + ExceptionUtils.getStackTrace(e));
         }
 
-        latch.countDown();
     }
 
 

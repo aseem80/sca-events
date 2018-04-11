@@ -3,6 +3,7 @@ package io.nordstrom.org.scaevents.integration.producer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +18,7 @@ public class CanarySender {
     private static final Logger LOGGER = LoggerFactory.getLogger(CanarySender.class);
 
 
+    @Qualifier("canaryTemplate")
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
 

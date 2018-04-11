@@ -30,7 +30,7 @@ public class CanaryReceiver {
     private CountDownLatch latch = new CountDownLatch(1);
 
 
-    @KafkaListener(topics = "${spring.kafka.producer.topic}")
+    @KafkaListener(topics = "${spring.kafka.producer.topic}", containerFactory="canaryKafkaListenerContainerFactory")
     public void receive(String payload, @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
                         @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
                         @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,

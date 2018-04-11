@@ -24,7 +24,7 @@ public class CanarySenderConfig {
     private String bootstrapServers;
 
     @Bean
-    public Map<String, Object> producerConfigs() {
+    public Map<String, Object> canaryProducerConfigs() {
         Map<String, Object> props = new HashMap<>();
         // list of host:port pairs used for establishing the initial connections to the Kakfa cluster
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
@@ -34,13 +34,13 @@ public class CanarySenderConfig {
     }
 
     @Bean
-    public ProducerFactory<String, String> producerFactory() {
-        return new DefaultKafkaProducerFactory<>(producerConfigs());
+    public ProducerFactory<String, String> canaryProducerFactory() {
+        return new DefaultKafkaProducerFactory<>(canaryProducerConfigs());
     }
 
-    @Bean
+    @Bean("canaryTemplate")
     public KafkaTemplate<String, String> kafkaTemplate() {
-        return new KafkaTemplate<>(producerFactory());
+        return new KafkaTemplate<>(canaryProducerFactory());
     }
 
     @Bean
