@@ -44,10 +44,7 @@ public class Sender {
         if(null!=payload) {
             LOGGER.info("sending message='{} TraceID='{}' to topic='{}'", uuid, topic);
             payloadDao.saveAsync(uuid, key, payload);
-            SendResult<String, String> result = wrapper.send(topic, uuid, payload, key, MESSAGE_HEADERS);
-            if(result==null) {
-                payloadDao.saveError(uuid, key, payload);
-            }
+            wrapper.send(topic, uuid, payload, key, MESSAGE_HEADERS);
         } else {
             LOGGER.warn(" Event with Null Payload ");
         }
