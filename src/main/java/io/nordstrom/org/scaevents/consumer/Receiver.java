@@ -33,33 +33,24 @@ public class Receiver {
     private Sender sender;
 
 
-
-
     @KafkaListener(id = "canonical-batch-listener", topics = "${spring.kafka.consumer.topic}")
-    public void receive(@Payload final List<String> messages) {
-        LOGGER.info("received batch of {} messages", messages.size() );
+    public void receive(@Payload final List<String> messages)  {
+        LOGGER.info("received batch of {} messages", messages.size());
         messages.forEach(payload -> consume(payload));
     }
 
-
     private void consume(String payload) {
-        try {
-            Map<String, Object> map = scaProcessor.fromCanonicalPayload(payload);
-            Pair<String,Boolean> pair = scaProcessor.isSCANodeChanged(map);
-            LOGGER.info("SCA changed for store {} : {}", pair.getLeft(), pair.getRight());
-            if(pair.getRight()!=null && pair.getRight()) {
-                String payloadToSend = scaProcessor.toSCAPayload(map);
-                sender.send(payloadToSend, pair.getLeft());
-            }
-        } catch (IOException e) {
-            LOGGER.error("Error Reading payload from Kafka. StackTrace " + ExceptionUtils.getStackTrace(e));
+
+        Map<String, Object> map = scaProcessor.fromCanonicalPayload(payload);
+        Pair<String, Boolean> pair = scaProcessor.isSCANodeChanged(map);
+        LOGGER.info("SCA changed for store {} : {}", pair.getLeft(), pair.getRight());
+        if (pair.getRight() != null && pair.getRight()) {
+            String payloadToSend = scaProcessor.toSCAPayload(map);
+            sender.send(payloadToSend, pair.getLeft());
         }
 
+
     }
-
-
-
-
 
 
 }

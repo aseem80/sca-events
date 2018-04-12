@@ -1,9 +1,11 @@
 package io.nordstrom.org.scaevents.util;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.nordstrom.org.scaevents.exception.SCAProcessorException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -39,16 +41,23 @@ public class SCAProcessorImpl implements SCAProcessor {
     @Retryable(value = { IOException.class },
             maxAttempts = 5,
             backoff = @Backoff(delay = 1000, multiplier = 2))
-    public Map<String, Object> fromCanonicalPayload(String payload) throws IOException{
+    public Map<String, Object> fromCanonicalPayload(String payload) {
         Map<String, Object> map = new HashMap<>();
         try {
             // convert JSON string to Map
             map = mapper.readValue(payload, new TypeReference<Map<String, Object>>() {
             });
         } catch (JsonParseException e) {
+            //Swallow
             LOGGER.error("Invalid Json Payload received. StackTrace " + ExceptionUtils.getStackTrace(e));
         } catch (JsonMappingException e) {
+            //Swallow
             LOGGER.error("Unexpected Format for Json. StackTrace" + ExceptionUtils.getStackTrace(e));
+        } catch (IOException e) {
+            LOGGER.error("IOException while parsing Json: " + ExceptionUtils.getStackTrace(e));
+            SCAProcessorException scaException = new SCAProcessorException("JsonProcessingException");
+            scaException.addSuppressed(e);
+            throw scaException;
         }
         return map;
     }
@@ -83,7 +92,7 @@ public class SCAProcessorImpl implements SCAProcessor {
     @Retryable(value = { IOException.class },
             maxAttempts = 5,
             backoff = @Backoff(delay = 1000, multiplier = 2))
-    public String toSCAPayload(Map<String, Object> nodes) throws IOException{
+    public String toSCAPayload(Map<String, Object> nodes) {
         Map<String, Object> payload = new LinkedHashMap<>();
         Object currentData = nodes.get(CURRENT_DATA);
         String storeNumber = (String) nodes.get(STORE_NUMBER);
@@ -110,7 +119,13 @@ public class SCAProcessorImpl implements SCAProcessor {
 
 
         }
-        return mapper.writeValueAsString(payload);
+        try {
+            return mapper.writeValueAsString(payload);
+        } catch (JsonProcessingException e) {
+            SCAProcessorException scaException = new SCAProcessorException("JsonProcessingException");
+            scaException.addSuppressed(e);
+            throw scaException;
+        }
 
     }
 

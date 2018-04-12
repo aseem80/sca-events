@@ -17,11 +17,11 @@ public interface SCAProcessor {
     static final String TIMESTAMP = "currentDataUpdatedTimeStamp";
     static final String CURRENT_DATA = "currentData";
 
-    Map<String, Object> fromCanonicalPayload(String payload) throws IOException;
+    Map<String, Object> fromCanonicalPayload(String payload);
 
     Pair<String, Boolean> isSCANodeChanged(Map<String, Object> nodes);
 
-    String toSCAPayload(Map<String, Object> nodes) throws IOException;
+    String toSCAPayload(Map<String, Object> nodes);
 
 
 }

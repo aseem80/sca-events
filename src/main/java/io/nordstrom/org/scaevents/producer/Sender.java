@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Component;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -42,8 +43,11 @@ public class Sender {
         String uuid = UUID.randomUUID().toString();
         if(null!=payload) {
             LOGGER.info("sending message='{} TraceID='{}' to topic='{}'", uuid, topic);
-            payloadDao.saveAsync(uuid.toString(), payload);
-            wrapper.send(topic, uuid, payload, key, MESSAGE_HEADERS);
+            payloadDao.saveAsync(uuid, key, payload);
+            SendResult<String, String> result = wrapper.send(topic, uuid, payload, key, MESSAGE_HEADERS);
+            if(result==null) {
+                payloadDao.saveError(uuid, key, payload);
+            }
         } else {
             LOGGER.warn(" Event with Null Payload ");
         }

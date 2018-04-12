@@ -5,7 +5,6 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectResult;
 import io.nordstrom.org.scaevents.annotation.AsyncRetryable;
-import io.nordstrom.org.scaevents.dao.PayloadDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +13,8 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.time.ZoneOffset;
@@ -36,10 +33,10 @@ public class S3Dao implements PayloadDao {
 
 
     private static final String CONTENT_TYPE = "application/json";
-    private static final String KEY_PREFIX = "sca-events/payload/event_";
-    private static final SimpleDateFormat sdf = new SimpleDateFormat( "YYYY-MM-dd");
-    private static final String KEY_SEPARATOR = "_";
-    private static final String PATH_SEPARATOR = "/";
+    private static final String ALL_KEY_PREFIX = "sca-events/all-events/event_";
+    private static final String ERROR_KEY_PREFIX = "sca-events/error-events/event_";
+
+
 
 
 
@@ -53,8 +50,8 @@ public class S3Dao implements PayloadDao {
 
 
     @Override
-    public void save(String uuid, Object payload) {
-        saveWithMetaData(uuid, payload);
+    public void save(String uuid, String payloadKey, Object payload) {
+        saveWithMetaData(uuid, payloadKey, payload, false);
     }
 
     @Override
@@ -62,11 +59,16 @@ public class S3Dao implements PayloadDao {
     @AsyncRetryable(value = { AmazonClientException.class },
             maxAttempts = 5,
             backoff = @Backoff(delay = 1000, multiplier = 2))
-    public void saveAsync(String uuid, Object payload) {
-        saveWithMetaData(uuid, payload);
+    public void saveAsync(String uuid, String payloadKey, Object payload) {
+        saveWithMetaData(uuid, payloadKey, payload, false);
     }
 
-    private PutObjectResult saveWithMetaData(String uuid, Object payload) {
+    @Override
+    public void saveError(String uuid, String payloadKey, Object payload) {
+        saveWithMetaData(uuid, payloadKey, payload, true);
+    }
+
+    private PutObjectResult saveWithMetaData(String uuid, String payloadKey, Object payload, boolean isErrorEvent) {
         LOGGER.info("Logging payload to S3 for UUID : " + uuid);
         byte[] bytes = payload.toString().getBytes();
         ObjectMetadata metadata = new ObjectMetadata();
@@ -76,8 +78,9 @@ public class S3Dao implements PayloadDao {
         ZonedDateTime utc = ZonedDateTime.now(ZoneOffset.UTC);
         Date date = Date.from(utc.toInstant());
         String datePart = sdf.format(date);
-        StringBuilder keyPrefix = new StringBuilder(KEY_PREFIX).append(datePart);
-        String key = keyPrefix.append(PATH_SEPARATOR).append(uuid).append(KEY_SEPARATOR).append(date.getTime()).toString();
+        StringBuilder keyPrefix = new StringBuilder(isErrorEvent ? ERROR_KEY_PREFIX : ALL_KEY_PREFIX).append(datePart);
+        String key = keyPrefix.append(PATH_SEPARATOR).append(uuid).append(KEY_SEPARATOR).append(payloadKey).append(KEY_SEPARATOR).append(date.getTime()).toString();
+        LOGGER.info("Saving payload to S3 with path : {} ", key );
         return s3Client.putObject(bucketName, key, new ByteArrayInputStream(bytes), metadata);
     }
 }
