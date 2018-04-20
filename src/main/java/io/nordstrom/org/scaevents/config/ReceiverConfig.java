@@ -3,8 +3,11 @@ package io.nordstrom.org.scaevents.config;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.nordstrom.org.scaevents.consumer.Receiver;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +21,7 @@ import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
 import java.util.HashMap;
 import java.util.Map;
 
+
 /**
  * Created by bmwi on 4/2/18.
  */
@@ -26,6 +30,19 @@ import java.util.Map;
 @EnableKafka
 public class ReceiverConfig {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReceiverConfig.class);
+
+    private static final String PROTON_URL_TEXT = "proton";
+    private static final String SECURITY_PROTOCOL = "security.protocol";
+    private static final String SSL_TRUSTSTORE_LOCATION = "ssl.truststore.location";
+    private static final String SSL_TRUSTSTORE_PASSWORD = "ssl.truststore.password";
+    private static final String SSL_TRUSTSTORE_TYPE = "ssl.truststore.type";
+    private static final String SSL_END_POINT_IDENTIFICATION_ALGORITHM = "ssl.endpoint.identification.algorithm";
+
+    private static final String SSL_KEYSTORE_LOCATION = "ssl.keystore.location";
+    private static final String SSL_KEYSTORE_PASSWORD = "ssl.keystore.password";
+    private static final String SSL_KEY_PASSWORD = "ssl.key.password";
+    private static final String SSL_KEYSTORE_TYPE = "ssl.keystore.type";
 
 
     private static final String AUTO_OFFSET_RESET_CONFIG_VALUE = "earliest";
@@ -35,6 +52,31 @@ public class ReceiverConfig {
 
     @Value("${spring.kafka.consumer.group-id:proton-og-consumer-1}")
     private String consumerGroupId;
+
+    @Value("${spring.kafka.consumer.ssl.enabled}")
+    private boolean isSSLEnabled;
+
+    @Value("${spring.kafka.consumer.security.protocol:SSL}")
+    private String securityProtocol;
+    @Value("${spring.kafka.consumer.ssl.truststore.location}")
+    private String sslTruststoreLocation;
+    @Value("${spring.kafka.consumer.ssl.truststore.password}")
+    private String sslTruststorePassword;
+    @Value("${spring.kafka.consumer.ssl.truststore.type:JKS}")
+    private String sslTruststoreType;
+    @Value("${spring.kafka.consumer.ssl.endpoint.identification.algorithm}")
+    private String sslEndPointIdentificationAlgorithm;
+
+
+    @Value("${spring.kafka.consumer.ssl.keystore.location}")
+    private String sslKeyStoreLocation;
+    @Value("${spring.kafka.consumer.ssl.keystore.password}")
+    private String sslKeystorePassword;
+    @Value("${spring.kafka.consumer.ssl.key.password}")
+    private String sslKeyPassword;
+    @Value("${spring.kafka.consumer.ssl.keystore.type:JKS}")
+    private String sslKeystoreType;
+
 
 
     @Bean
@@ -48,6 +90,10 @@ public class ReceiverConfig {
         props.put(ConsumerConfig.GROUP_ID_CONFIG, consumerGroupId);
         // automatically reset the offset to the earliest offset
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, AUTO_OFFSET_RESET_CONFIG_VALUE);
+        if(isSSLEnabled || StringUtils.contains(bootstrapServers, PROTON_URL_TEXT)) {
+            setSSL(props);
+        }
+
         return props;
     }
 
@@ -72,6 +118,21 @@ public class ReceiverConfig {
         mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false).configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         return mapper;
     }
+
+    private void setSSL(Map<String, Object> props) {
+        props.put(SECURITY_PROTOCOL, securityProtocol);
+        props.put(SSL_TRUSTSTORE_LOCATION, sslTruststoreLocation);
+        props.put(SSL_TRUSTSTORE_PASSWORD, sslTruststorePassword);
+        props.put(SSL_TRUSTSTORE_TYPE, sslTruststoreType);
+        props.put(SSL_END_POINT_IDENTIFICATION_ALGORITHM, sslEndPointIdentificationAlgorithm);
+
+        props.put(SSL_KEYSTORE_LOCATION, sslKeyStoreLocation);
+        props.put(SSL_KEYSTORE_PASSWORD, sslKeystorePassword);
+        props.put(SSL_KEYSTORE_TYPE, sslKeystoreType);
+        props.put(SSL_KEY_PASSWORD, sslKeyPassword);
+
+    }
+
 
 
 }

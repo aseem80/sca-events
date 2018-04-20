@@ -41,21 +41,21 @@ public class SCAProcessorImpl implements SCAProcessor {
     @Retryable(value = { IOException.class },
             maxAttempts = 5,
             backoff = @Backoff(delay = 1000, multiplier = 2))
-    public Map<String, Object> fromCanonicalPayload(String payload) {
+    public Map<String, Object> fromCanonicalPayload(String key, String payload) {
         Map<String, Object> map = new HashMap<>();
         try {
             // convert JSON string to Map
             map = mapper.readValue(payload, new TypeReference<Map<String, Object>>() {
             });
         } catch (JsonParseException e) {
-            //Swallow
-            LOGGER.error("Invalid Json Payload received. StackTrace " + ExceptionUtils.getStackTrace(e));
+            //Log and Swallow as there is nothing that can be done on this message
+            LOGGER.error("Invalid Json Payload received for key='{}'. StackTrace='{}' ", key , ExceptionUtils.getStackTrace(e));
         } catch (JsonMappingException e) {
-            //Swallow
-            LOGGER.error("Unexpected Format for Json. StackTrace" + ExceptionUtils.getStackTrace(e));
+            //Log and Swallow as there is nothing that can be done on this message
+            LOGGER.error("Unexpected Format for Json for key='{}'. StackTrace='{}' ", key , ExceptionUtils.getStackTrace(e));
         } catch (IOException e) {
-            LOGGER.error("IOException while parsing Json: " + ExceptionUtils.getStackTrace(e));
-            SCAProcessorException scaException = new SCAProcessorException("JsonProcessingException");
+            LOGGER.error("IOException while parsing Json for key='{}'. StackTrace='{}' ", key , ExceptionUtils.getStackTrace(e));
+            SCAProcessorException scaException = new SCAProcessorException("IOException");
             scaException.addSuppressed(e);
             throw scaException;
         }
@@ -77,7 +77,7 @@ public class SCAProcessorImpl implements SCAProcessor {
                 if (change instanceof Map) {
                     Map changeMap = (Map) change;
                     if (changeMap.containsValue(SCA)) {
-                        LOGGER.info("sca node Changed for storeNumber." + storeNumber);
+                        LOGGER.info("sca node Changed for storeNumber {}" , storeNumber);
                         return Pair.of(storeNumber,true);
                     }
                 }

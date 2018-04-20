@@ -17,7 +17,7 @@ public interface SCAProcessor {
     static final String TIMESTAMP = "currentDataUpdatedTimeStamp";
     static final String CURRENT_DATA = "currentData";
 
-    Map<String, Object> fromCanonicalPayload(String payload);
+    Map<String, Object> fromCanonicalPayload(String key, String payload);
 
     Pair<String, Boolean> isSCANodeChanged(Map<String, Object> nodes);
 
