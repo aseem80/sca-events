@@ -10,6 +10,11 @@ The motivation is to facilitate SCA SOLR integration for anniversary 2018
 
 This is java based application to be built with maven.
 
+
+## Design
+
+[ORG_SCA_Sream_processor_V1.pdf](https://gitlab.nordstrom.com/ORG/sca-events/src/main/documents/ORG_SCA_Sream_processor_V1.pdf)
+
 ## Prerequisites
 
 Java 8, Maven, KAFKA Cluster URL
