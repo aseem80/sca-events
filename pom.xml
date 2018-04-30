@@ -175,9 +175,9 @@
                                                     <port>9092:9092</port>
                                                 </ports>
                                                 <env>
-                                                    <KAFKA_ADVERTISED_HOST_NAME>192.168.99.113</KAFKA_ADVERTISED_HOST_NAME>
+                                                    <KAFKA_ADVERTISED_HOST_NAME>192.168.99.100</KAFKA_ADVERTISED_HOST_NAME>
                                                     <KAFKA_ADVERTISED_PORT>9092</KAFKA_ADVERTISED_PORT>
-                                                    <KAFKA_ZOOKEEPER_CONNECT>192.168.99.113:2181</KAFKA_ZOOKEEPER_CONNECT>
+                                                    <KAFKA_ZOOKEEPER_CONNECT>192.168.99.100:2181</KAFKA_ZOOKEEPER_CONNECT>
                                                 </env>
                                                 <wait>
                                                     <tcp>
@@ -200,8 +200,8 @@
                                                     <port>9090:9090</port>
                                                 </ports>
                                                 <env>
-                                                    <SPRING_KAFKA_PRODUCER_BOOTSTRAP-SERVERS>192.168.99.113:9092</SPRING_KAFKA_PRODUCER_BOOTSTRAP-SERVERS>
-                                                    <SPRING_KAFKA_CONSUMER_BOOTSTRAP-SERVERS>192.168.99.113:9092</SPRING_KAFKA_CONSUMER_BOOTSTRAP-SERVERS>
+                                                    <SPRING_KAFKA_PRODUCER_BOOTSTRAP-SERVERS>192.168.99.100:9092</SPRING_KAFKA_PRODUCER_BOOTSTRAP-SERVERS>
+                                                    <SPRING_KAFKA_CONSUMER_BOOTSTRAP-SERVERS>192.168.99.100:9092</SPRING_KAFKA_CONSUMER_BOOTSTRAP-SERVERS>
                                                 </env>
                                             </run>
                                         </image>
