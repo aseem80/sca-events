@@ -731,6 +731,7 @@
                     <cnamePrefix>org-sca-event-stream-processor-non-prod</cnamePrefix>
                     <environmentName>non-prod</environmentName>
                     <environmentRef>non-prod</environmentRef>
+                    <versionLabel>${project.version}</versionLabel>
                     <solutionStack>64bit Amazon Linux 2016.09 v2.4.0 running Java 8</solutionStack>
                 </configuration>
             </plugin>
