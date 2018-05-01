@@ -677,6 +677,7 @@
                     <evaluateOnCommit>HEAD</evaluateOnCommit>
                 </configuration>
             </plugin>
+            <!--
             <plugin>
             <groupId>io.fabric8</groupId>
             <artifactId>docker-maven-plugin</artifactId>
@@ -686,8 +687,7 @@
                 <id>build-image</id>
                 <phase>package</phase>
                 <goals>
-                    <!-- "build" should be used to create the images with the
-                         artifact -->
+
                     <goal>build</goal>
                     <goal>start</goal>
                 </goals>
@@ -706,7 +706,6 @@
                                     <port>9090</port>
                                 </ports>
                                 <entryPoint>
-                                    <!-- exec form for ENTRYPOINT -->
                                     <exec>
                                         <arg>java</arg>
                                         <arg>-jar</arg>
@@ -720,6 +719,22 @@
             </execution>
             </executions>
             </plugin>
+            -->
+            <plugin>
+                <groupId>br.com.ingenieux</groupId>
+                <artifactId>beanstalk-maven-plugin</artifactId>
+                <configuration>
+                    <applicationName>org-sca-event-stream-processor</applicationName>
+                    <s3Bucket>elasticbeanstalk-us-west-2-383427504773</s3Bucket>
+                    <s3Key>${project.artifactId}/${project.build.finalName}.jar</s3Key>
+                    <cnamePrefix>org-sca-event-stream-processor-non-prod</cnamePrefix>
+                    <environmentName>non-prod</environmentName>
+                    <environmentRef>non-prod</environmentRef>
+                    <solutionStack>64bit Amazon Linux 2016.09 v2.4.0 running Java 8</solutionStack>
+                </configuration>
+            </plugin>
+
+
         </plugins>
     </build>
 
