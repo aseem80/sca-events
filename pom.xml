@@ -726,6 +726,7 @@
                 <configuration>
                     <applicationName>org-sca-event-stream-processor</applicationName>
                     <s3Bucket>elasticbeanstalk-us-west-2-383427504773</s3Bucket>
+                    <regionName>us-west-2</regionName>
                     <s3Key>${project.artifactId}/${project.build.finalName}.jar</s3Key>
                     <cnamePrefix>org-sca-event-stream-processor-non-prod</cnamePrefix>
                     <environmentName>non-prod</environmentName>
