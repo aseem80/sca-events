@@ -18,7 +18,9 @@ test:
   script:
     - mvn $MAVEN_CLI_OPTS test
 
+
 deploy_non_prod:
   stage: deploy
   script:
+    - mvn $MAVEN_CLI_OPTS install
     - mvn beanstalk:upload-source-bundle beanstalk:create-application-version beanstalk:create-environment
