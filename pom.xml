@@ -736,20 +736,6 @@
                     <environmentRef>non-prod</environmentRef>
                     <versionLabel>${project.version}</versionLabel>
                     <solutionStack>64bit Amazon Linux 2017.09 v2.6.8 running Java 8</solutionStack>
-                    <configurationTemplate>default</configurationTemplate>
-                    <templateName>default</templateName>
-                    <configurationTemplates>
-                        <configurationTemplate>
-                            <id>default</id>
-                            <optionSettings>
-                                <optionSetting>
-                                    <namespace>aws:elasticbeanstalk:application</namespace>
-                                    <optionName>Application Healthcheck URL</optionName>
-                                    <value>/actuator/health</value>
-                                </optionSetting>
-                            </optionSettings>
-                        </configurationTemplate>
-                    </configurationTemplates>
                 </configuration>
             </plugin>
 
