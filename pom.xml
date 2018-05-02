@@ -16,6 +16,8 @@
         <avro.version>1.8.2</avro.version>
         <scmUser>place-holder</scmUser> <!-- Passed in via command line -->
         <scmPass>place-holder</scmPass> <!-- Passed in via command line -->
+        <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
+        <beanstalk.versionLabel>${maven.build.timestamp}</beanstalk.versionLabel>
     </properties>
 
     <scm>
@@ -727,12 +729,12 @@
                     <applicationName>org-sca-event-stream-processor</applicationName>
                     <s3Bucket>elasticbeanstalk-us-west-2-383427504773</s3Bucket>
                     <regionName>us-west-2</regionName>
-                    <s3Key>${project.artifactId}/${project.build.finalName}.jar</s3Key>
+                    <s3Key>${project.artifactId}/${project.build.finalName}-${maven.build.timestamp}.jar</s3Key>
                     <cnamePrefix>org-sca-event-stream-processor-non-prod</cnamePrefix>
                     <environmentName>non-prod</environmentName>
                     <environmentRef>non-prod</environmentRef>
                     <versionLabel>${project.version}</versionLabel>
-                    <solutionStack>64bit Amazon Linux 2016.09 v2.4.0 running Java 8</solutionStack>
+                    <solutionStack>64bit Amazon Linux 2017.09 v2.6.8 running Java 8</solutionStack>
                 </configuration>
             </plugin>
 
