@@ -3,6 +3,7 @@ package io.nordstrom.org.scaevents.config;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.nordstrom.org.scaevents.consumer.Receiver;
+import io.nordstrom.org.scaevents.util.ProtonUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -31,21 +32,6 @@ import java.util.Map;
 public class ReceiverConfig {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ReceiverConfig.class);
-
-    private static final String PROTON_URL_TEXT = "proton";
-    private static final String SECURITY_PROTOCOL = "security.protocol";
-    private static final String SSL_TRUSTSTORE_LOCATION = "ssl.truststore.location";
-    private static final String SSL_TRUSTSTORE_PASSWORD = "ssl.truststore.password";
-    private static final String SSL_TRUSTSTORE_TYPE = "ssl.truststore.type";
-    private static final String SSL_END_POINT_IDENTIFICATION_ALGORITHM = "ssl.endpoint.identification.algorithm";
-
-    private static final String SSL_KEYSTORE_LOCATION = "ssl.keystore.location";
-    private static final String SSL_KEYSTORE_PASSWORD = "ssl.keystore.password";
-    private static final String SSL_KEY_PASSWORD = "ssl.key.password";
-    private static final String SSL_KEYSTORE_TYPE = "ssl.keystore.type";
-
-
-    private static final String AUTO_OFFSET_RESET_CONFIG_VALUE = "earliest";
 
     @Value("${spring.kafka.consumer.bootstrap-servers}")
     private String bootstrapServers;
@@ -89,8 +75,8 @@ public class ReceiverConfig {
         // allows a pool of processes to divide the work of consuming and processing records
         props.put(ConsumerConfig.GROUP_ID_CONFIG, consumerGroupId);
         // automatically reset the offset to the earliest offset
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, AUTO_OFFSET_RESET_CONFIG_VALUE);
-        if(isSSLEnabled || StringUtils.contains(bootstrapServers, PROTON_URL_TEXT)) {
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, ProtonUtil.AUTO_OFFSET_RESET_CONFIG_VALUE);
+        if(isSSLEnabled || StringUtils.contains(bootstrapServers, ProtonUtil.PROTON_URL_TEXT)) {
             setSSL(props);
         }
 
@@ -120,16 +106,16 @@ public class ReceiverConfig {
     }
 
     private void setSSL(Map<String, Object> props) {
-        props.put(SECURITY_PROTOCOL, securityProtocol);
-        props.put(SSL_TRUSTSTORE_LOCATION, sslTruststoreLocation);
-        props.put(SSL_TRUSTSTORE_PASSWORD, sslTruststorePassword);
-        props.put(SSL_TRUSTSTORE_TYPE, sslTruststoreType);
-        props.put(SSL_END_POINT_IDENTIFICATION_ALGORITHM, sslEndPointIdentificationAlgorithm);
+        props.put(ProtonUtil.SECURITY_PROTOCOL, securityProtocol);
+        props.put(ProtonUtil.SSL_TRUSTSTORE_LOCATION, sslTruststoreLocation);
+        props.put(ProtonUtil.SSL_TRUSTSTORE_PASSWORD, sslTruststorePassword);
+        props.put(ProtonUtil.SSL_TRUSTSTORE_TYPE, sslTruststoreType);
+        props.put(ProtonUtil.SSL_END_POINT_IDENTIFICATION_ALGORITHM, sslEndPointIdentificationAlgorithm);
 
-        props.put(SSL_KEYSTORE_LOCATION, sslKeyStoreLocation);
-        props.put(SSL_KEYSTORE_PASSWORD, sslKeystorePassword);
-        props.put(SSL_KEYSTORE_TYPE, sslKeystoreType);
-        props.put(SSL_KEY_PASSWORD, sslKeyPassword);
+        props.put(ProtonUtil.SSL_KEYSTORE_LOCATION, sslKeyStoreLocation);
+        props.put(ProtonUtil.SSL_KEYSTORE_PASSWORD, sslKeystorePassword);
+        props.put(ProtonUtil.SSL_KEYSTORE_TYPE, sslKeystoreType);
+        props.put(ProtonUtil.SSL_KEY_PASSWORD, sslKeyPassword);
 
     }
 
