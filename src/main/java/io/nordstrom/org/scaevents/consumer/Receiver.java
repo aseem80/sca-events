@@ -12,6 +12,7 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -62,8 +63,9 @@ public class Receiver {
         Pair<String, Boolean> pair = scaProcessor.isSCANodeChanged(map);
         LOGGER.info("SCA changed for store {} : {}", pair.getLeft(), pair.getRight());
         if (pair.getRight() != null && pair.getRight()) {
-            String payloadToSend = scaProcessor.toSCAPayload(map);
-            sender.sendAsync(payloadToSend, pair.getLeft());
+            Map<String, Object> headersMap = new HashMap<>();
+            String payloadToSend = scaProcessor.toSCAPayload(map, headersMap);
+            sender.sendAsync(payloadToSend, pair.getLeft(), headersMap);
         }
 
 

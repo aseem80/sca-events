@@ -39,23 +39,25 @@ public class Sender {
     @Autowired
     private KafkaTemplateWrapper wrapper;
 
-    public void sendAsync(String payload, String key) {
+    public void sendAsync(String payload, String key, Map<String, Object> headers) {
         String uuid = UUID.randomUUID().toString();
         if(null!=payload) {
             LOGGER.info("sending message='{} TraceID='{}' to topic='{}'", uuid, topic);
             payloadDao.saveAsync(uuid, key, payload);
-            wrapper.sendAsync(topic, uuid, payload, key, MESSAGE_HEADERS);
+            headers.putAll(MESSAGE_HEADERS);
+            wrapper.sendAsync(topic, uuid, payload, key, headers);
         } else {
             LOGGER.warn(" Event with Null Payload ");
         }
     }
 
-    public void send(String payload, String key) throws Throwable {
+    public void send(String payload, String key, Map<String, Object> headers) throws Throwable {
         String uuid = UUID.randomUUID().toString();
         if(null!=payload) {
             LOGGER.info("sending message='{}' TraceID='{}' to topic='{}'", uuid, topic);
             payloadDao.saveAsync(uuid, key, payload);
-            wrapper.send(topic, uuid, payload, key, MESSAGE_HEADERS);
+            headers.putAll(MESSAGE_HEADERS);
+            wrapper.send(topic, uuid, payload, key, headers);
         } else {
             LOGGER.warn(" Event with Null Payload ");
         }

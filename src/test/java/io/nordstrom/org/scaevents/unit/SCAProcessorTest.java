@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -48,7 +49,7 @@ public class SCAProcessorTest {
     public void toSCAPayload() throws IOException{
         String canonicalPayload = FileUtils.readFileToString(new ClassPathResource("payload_sca_change.json").getFile(), StandardCharsets.UTF_8);
         Map<String,Object> canonicalMap = scaProcessor.fromCanonicalPayload("1", canonicalPayload);
-        String scaPayload = scaProcessor.toSCAPayload(canonicalMap);
+        String scaPayload = scaProcessor.toSCAPayload(canonicalMap, new HashMap<>());
         String scaPayloadExpected = FileUtils.readFileToString(new ClassPathResource("sca_payload.json").getFile(), StandardCharsets.UTF_8);
         assertEquals(scaPayloadExpected, scaPayload);
     }

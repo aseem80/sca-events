@@ -3,6 +3,9 @@ package io.nordstrom.org.scaevents.util;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.Map;
 
 /**
@@ -16,12 +19,22 @@ public interface SCAProcessor {
     static final String STORE_NUMBER = "storeNumber";
     static final String TIMESTAMP = "currentDataUpdatedTimeStamp";
     static final String CURRENT_DATA = "currentData";
+    static final SimpleDateFormat scaSimpleDateFormat = new SimpleDateFormat("YYYY-mm-dd'T'HH:mm:ss.SSS'Z'");
+
+    static final String SCA_TIMESTAMP_KAFKA_HEADER = "ValueUpdatedTime";
+
+    static DateTimeFormatter canonicalFormatter = new DateTimeFormatterBuilder()
+            .append(DateTimeFormatter.ISO_DATE).appendLiteral('T')
+            .appendPattern("HH:mm:ss")
+            .appendPattern("[.SSSSSSSSS]")
+            .appendOffset("+HH:mm", "Z")
+            .toFormatter();
 
     Map<String, Object> fromCanonicalPayload(String key, String payload);
 
     Pair<String, Boolean> isSCANodeChanged(Map<String, Object> nodes);
 
-    String toSCAPayload(Map<String, Object> nodes);
+    String toSCAPayload(Map<String, Object> nodes, Map<String, Object> headers);
 
 
 }

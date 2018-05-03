@@ -17,10 +17,11 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.*;
 
 /**
  * Created by bmwi on 4/3/18.
@@ -92,10 +93,11 @@ public class SCAProcessorImpl implements SCAProcessor {
     @Retryable(value = { IOException.class },
             maxAttempts = 5,
             backoff = @Backoff(delay = 1000, multiplier = 2))
-    public String toSCAPayload(Map<String, Object> nodes) {
+    public String toSCAPayload(Map<String, Object> nodes, Map<String, Object> headers) {
         Map<String, Object> payload = new LinkedHashMap<>();
         Object currentData = nodes.get(CURRENT_DATA);
         String storeNumber = (String) nodes.get(STORE_NUMBER);
+
         if (currentData instanceof Map) {
             Map currentDataMap = (Map) currentData;
             if (!currentDataMap.isEmpty()) {
@@ -106,10 +108,27 @@ public class SCAProcessorImpl implements SCAProcessor {
                     payload.put(STORE_NUMBER, storeNumber);
                 }
                 String timeStamp = (String) nodes.get(TIMESTAMP);
+                String now =scaSimpleDateFormat.format( new Date());
+
                 if (!StringUtils.isBlank(timeStamp)) {
-                    payload.put(TIMESTAMP, timeStamp);
+                    try {
+                        LocalDateTime time = LocalDateTime.parse(timeStamp, canonicalFormatter);
+
+                        Date out = Date.from(time.atZone(ZoneId.systemDefault()).toInstant());
+
+                        String scaDesiredFormatValue = scaSimpleDateFormat.format(out);
+                        payload.put(TIMESTAMP, scaDesiredFormatValue);
+                        headers.put(SCA_TIMESTAMP_KAFKA_HEADER, scaDesiredFormatValue);
+                    } catch(Exception e) {
+                        LOGGER.warn("Error in converting timestamp to desired format for store {}. Hence appending system timestamp {} node", storeNumber, timeStamp);
+                        payload.put(TIMESTAMP, now);
+                        headers.put(SCA_TIMESTAMP_KAFKA_HEADER, now);
+                    }
+
                 } else {
                     LOGGER.warn("Empty {} node", TIMESTAMP);
+                    payload.put(TIMESTAMP, now);
+                    headers.put(SCA_TIMESTAMP_KAFKA_HEADER, now);
                 }
                 Object scaCurrentData = currentDataMap.get(SCA);
                 payload.put(SCA, scaCurrentData);

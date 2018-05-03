@@ -38,7 +38,8 @@ public class CanaryReceiver {
                         @Header("TraceID") String uuid,
                         @Header("SchemaVersion") String schemaVersion,
                         @Header("MessageMode") String messageMode,
-                        @Header("MessageType") String messageType) {
+                        @Header("MessageType") String messageType,
+                        @Header("ValueUpdatedTime") String valueUpdatedTime) {
         LOGGER.info("received payload='{}'", payload);
         try {
             Path path  = OrgKafkaAppTestUtil.tempTestFilePath();
@@ -47,6 +48,7 @@ public class CanaryReceiver {
             assertEquals("1.0", schemaVersion);
             assertEquals("event", messageMode);
             assertEquals("org", messageType);
+            assertEquals("2018-05-03T17:05:31.363Z", valueUpdatedTime);
             Files.write(path, payload,
                     StandardOpenOption.CREATE,
                     StandardOpenOption.TRUNCATE_EXISTING );
