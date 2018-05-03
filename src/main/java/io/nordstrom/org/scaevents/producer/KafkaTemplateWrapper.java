@@ -33,7 +33,7 @@ public class KafkaTemplateWrapper {
 
 
     @Autowired
-    private KafkaTemplate<String, String> kafkaTemplate;
+    private KafkaTemplate<String, byte[]> kafkaTemplate;
 
     @Autowired
     private PayloadDao payloadDao;
@@ -51,7 +51,7 @@ public class KafkaTemplateWrapper {
 
     //Use it in high performance and non-transactional scenario
     public void sendAsync(String topic, String uuid, String payload, String key, Map<String,Object> headers) {
-        Message<String> message = buildMessage(topic, uuid, payload, key,headers);
+        Message<byte[]> message = buildMessage(topic, uuid, payload, key,headers);
         try {
             sendAsync(message);
         } catch(Throwable t) {
@@ -60,13 +60,13 @@ public class KafkaTemplateWrapper {
     }
 
 
-    public SendResult<String, String> send(String topic, String uuid, String payload, String key, Map<String,Object> headers) throws Throwable{
+    public SendResult<String, byte[]> send(String topic, String uuid, String payload, String key, Map<String,Object> headers) throws Throwable{
         return send(buildMessage(topic, uuid, payload, key,headers));
     }
 
 
-    private SendResult<String, String> send(final Message<String> message) throws Throwable {
-        SendResult<String, String> result = null;
+    private SendResult<String, byte[]> send(final Message<byte[]> message) throws Throwable {
+        SendResult<String, byte[]> result = null;
         try {
             result = kafkaTemplate.send(message).get();
             LOGGER.info("Successfully published payload ");
@@ -77,7 +77,7 @@ public class KafkaTemplateWrapper {
         return result;
     }
 
-    private Message<String> buildMessage(String topic, String uuid, String payload, String key, Map<String,Object> headers) {
+    private Message<byte[]> buildMessage(String topic, String uuid, String payload, String key, Map<String,Object> headers) {
         MessageBuilder messageBuilder= MessageBuilder.withPayload(payload.getBytes()).setHeader(KafkaHeaders.TOPIC, topic).setHeader(KafkaHeaders.MESSAGE_KEY, key)
                 .setHeader(TRACE_ID_HEADER, uuid.toString());
         if(null!= headers) {
@@ -93,19 +93,19 @@ public class KafkaTemplateWrapper {
 
 
 
-    private ListenableFuture<SendResult<String, String>> sendAsync(final Message<String> message) throws ExecutionException, InterruptedException {
-        ListenableFuture<SendResult<String, String>> future = kafkaTemplate.send(message);
-        future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
+    private ListenableFuture<SendResult<String, byte[]>> sendAsync(final Message<byte[]> message) throws ExecutionException, InterruptedException {
+        ListenableFuture<SendResult<String, byte[]>> future = kafkaTemplate.send(message);
+        future.addCallback(new ListenableFutureCallback<SendResult<String, byte[]>>() {
 
             @Override
-            public void onSuccess(SendResult<String, String> result) {
+            public void onSuccess(SendResult<String, byte[]> result) {
                 LOGGER.info("Successfully published payload ");
             }
 
             @Override
             public void onFailure(Throwable ex) {
                 try {
-                    SendResult<String, String> result = retryOnFailure(message, ex);
+                    SendResult<String, byte[]> result = retryOnFailure(message, ex);
                 } catch (Throwable t) {
                     MessageHeaders headers = message.getHeaders();
                     String key = (String) headers.get(KafkaHeaders.MESSAGE_KEY);
@@ -119,8 +119,8 @@ public class KafkaTemplateWrapper {
     }
 
 
-    private SendResult<String, String> retryOnFailure(Message<String> message, Throwable ex) throws Throwable{
-        SendResult<String, String> result = null;
+    private SendResult<String, byte[]> retryOnFailure(Message<byte[]> message, Throwable ex) throws Throwable{
+        SendResult<String, byte[]> result = null;
         LOGGER.info("Retrying for : " + ex.getClass().getName());
         double sleepTimeInMilliSeconds = retryDelayInMillis;
         for (int i = 1; i <= maxRetry; i++) {

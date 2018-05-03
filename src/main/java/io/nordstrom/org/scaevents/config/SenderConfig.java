@@ -1,7 +1,6 @@
 package io.nordstrom.org.scaevents.config;
 
-import io.nordstrom.org.scaevents.producer.Sender;
-import io.nordstrom.org.scaevents.util.ProtonUtil;
+import io.nordstrom.org.scaevents.util.PropertiesUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.ByteArraySerializer;
@@ -59,7 +58,7 @@ public class SenderConfig {
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ByteArraySerializer.class);
 
-        if(isSSLEnabled || StringUtils.contains(bootstrapServers, ProtonUtil.PROTON_URL_TEXT)) {
+        if(isSSLEnabled || StringUtils.contains(bootstrapServers, PropertiesUtil.PROTON_URL_TEXT)) {
             setSSL(props);
         }
 
@@ -67,26 +66,26 @@ public class SenderConfig {
     }
 
     @Bean
-    public ProducerFactory<String, String> producerFactory() {
+    public ProducerFactory<String, byte[]> producerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfigs());
     }
 
     @Bean
-    public KafkaTemplate<String, String> kafkaTemplate() {
+    public KafkaTemplate<String, byte[]> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 
     private void setSSL(Map<String, Object> props) {
-        props.put(ProtonUtil.SECURITY_PROTOCOL, securityProtocol);
-        props.put(ProtonUtil.SSL_TRUSTSTORE_LOCATION, sslTruststoreLocation);
-        props.put(ProtonUtil.SSL_TRUSTSTORE_PASSWORD, sslTruststorePassword);
-        props.put(ProtonUtil.SSL_TRUSTSTORE_TYPE, sslTruststoreType);
-        props.put(ProtonUtil.SSL_END_POINT_IDENTIFICATION_ALGORITHM, sslEndPointIdentificationAlgorithm);
+        props.put(PropertiesUtil.SECURITY_PROTOCOL, securityProtocol);
+        props.put(PropertiesUtil.SSL_TRUSTSTORE_LOCATION, sslTruststoreLocation);
+        props.put(PropertiesUtil.SSL_TRUSTSTORE_PASSWORD, sslTruststorePassword);
+        props.put(PropertiesUtil.SSL_TRUSTSTORE_TYPE, sslTruststoreType);
+        props.put(PropertiesUtil.SSL_END_POINT_IDENTIFICATION_ALGORITHM, sslEndPointIdentificationAlgorithm);
 
-        props.put(ProtonUtil.SSL_KEYSTORE_LOCATION, sslKeyStoreLocation);
-        props.put(ProtonUtil.SSL_KEYSTORE_PASSWORD, sslKeystorePassword);
-        props.put(ProtonUtil.SSL_KEYSTORE_TYPE, sslKeystoreType);
-        props.put(ProtonUtil.SSL_KEY_PASSWORD, sslKeyPassword);
+        props.put(PropertiesUtil.SSL_KEYSTORE_LOCATION, sslKeyStoreLocation);
+        props.put(PropertiesUtil.SSL_KEYSTORE_PASSWORD, sslKeystorePassword);
+        props.put(PropertiesUtil.SSL_KEYSTORE_TYPE, sslKeystoreType);
+        props.put(PropertiesUtil.SSL_KEY_PASSWORD, sslKeyPassword);
 
     }
 }

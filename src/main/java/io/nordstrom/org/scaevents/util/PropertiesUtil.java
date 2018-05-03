@@ -1,8 +1,9 @@
 package io.nordstrom.org.scaevents.util;
 
-public class ProtonUtil {
+public class PropertiesUtil {
 
     public static final String PROTON_URL_TEXT = "proton";
+    public static final String SCA_URL_TEXT = "sca";
     public static final String SECURITY_PROTOCOL = "security.protocol";
     public static final String SSL_TRUSTSTORE_LOCATION = "ssl.truststore.location";
     public static final String SSL_TRUSTSTORE_PASSWORD = "ssl.truststore.password";

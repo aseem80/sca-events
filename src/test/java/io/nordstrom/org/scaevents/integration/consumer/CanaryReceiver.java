@@ -31,7 +31,7 @@ public class CanaryReceiver {
 
 
     @KafkaListener(topics = "${spring.kafka.producer.topic}", containerFactory="canaryKafkaListenerContainerFactory")
-    public void receive(String payload, @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
+    public void receive(byte[] payload, @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
                         @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
                         @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
                         @Header(KafkaHeaders.RECEIVED_TIMESTAMP) long ts,
@@ -47,7 +47,7 @@ public class CanaryReceiver {
             assertEquals("1.0", schemaVersion);
             assertEquals("event", messageMode);
             assertEquals("org", messageType);
-            Files.write(path, payload.getBytes(),
+            Files.write(path, payload,
                     StandardOpenOption.CREATE,
                     StandardOpenOption.TRUNCATE_EXISTING );
         } catch (IOException e) {
