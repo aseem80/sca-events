@@ -78,7 +78,7 @@ public class KafkaTemplateWrapper {
     }
 
     private Message<String> buildMessage(String topic, String uuid, String payload, String key, Map<String,Object> headers) {
-        MessageBuilder messageBuilder= MessageBuilder.withPayload(payload).setHeader(KafkaHeaders.TOPIC, topic).setHeader(KafkaHeaders.MESSAGE_KEY, key)
+        MessageBuilder messageBuilder= MessageBuilder.withPayload(payload.getBytes()).setHeader(KafkaHeaders.TOPIC, topic).setHeader(KafkaHeaders.MESSAGE_KEY, key)
                 .setHeader(TRACE_ID_HEADER, uuid.toString());
         if(null!= headers) {
             for (String header : headers.keySet()) {
