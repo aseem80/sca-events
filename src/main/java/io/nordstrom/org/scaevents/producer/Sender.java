@@ -20,7 +20,7 @@ public class Sender {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Sender.class);
 
-    private static final Map<String,Object> MESSAGE_HEADERS = new LinkedHashMap<>();
+    private static final Map<String,String> MESSAGE_HEADERS = new LinkedHashMap<>();
     static {
         MESSAGE_HEADERS.put("SchemaVersion","1.0");
         MESSAGE_HEADERS.put("MessageMode","event");
@@ -39,10 +39,10 @@ public class Sender {
     @Autowired
     private KafkaTemplateWrapper wrapper;
 
-    public void sendAsync(String payload, String key, Map<String, Object> headers) {
+    public void sendAsync(String payload, String key, Map<String, String> headers) {
         String uuid = UUID.randomUUID().toString();
         if(null!=payload) {
-            LOGGER.info("sending message='{} TraceID='{}' to topic='{}'", uuid, topic);
+            LOGGER.info("sending message with TraceID='{}' to topic='{}'", uuid, topic);
             payloadDao.saveAsync(uuid, key, payload);
             headers.putAll(MESSAGE_HEADERS);
             wrapper.sendAsync(topic, uuid, payload, key, headers);
@@ -51,7 +51,7 @@ public class Sender {
         }
     }
 
-    public void send(String payload, String key, Map<String, Object> headers) throws Throwable {
+    public void send(String payload, String key, Map<String, String> headers) throws Throwable {
         String uuid = UUID.randomUUID().toString();
         if(null!=payload) {
             LOGGER.info("sending message='{}' TraceID='{}' to topic='{}'", uuid, topic);

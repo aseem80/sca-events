@@ -38,7 +38,7 @@ public class Receiver {
         messages.forEach(message -> {
             MessageHeaders headers = message.getHeaders();
             String receivedMessageKey = "";
-            Object receivedMessageKeyHeaderValue = headers.get(KafkaHeaders.MESSAGE_KEY);
+            Object receivedMessageKeyHeaderValue = headers.get(KafkaHeaders.RECEIVED_MESSAGE_KEY);
             if (receivedMessageKeyHeaderValue != null) {
                 receivedMessageKey = receivedMessageKeyHeaderValue.toString();
             }
@@ -63,7 +63,7 @@ public class Receiver {
         Pair<String, Boolean> pair = scaProcessor.isSCANodeChanged(map);
         LOGGER.info("SCA changed for store {} : {}", pair.getLeft(), pair.getRight());
         if (pair.getRight() != null && pair.getRight()) {
-            Map<String, Object> headersMap = new HashMap<>();
+            Map<String, String> headersMap = new HashMap<>();
             String payloadToSend = scaProcessor.toSCAPayload(map, headersMap);
             sender.sendAsync(payloadToSend, pair.getLeft(), headersMap);
         }

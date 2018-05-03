@@ -50,7 +50,7 @@ public class KafkaTemplateWrapper {
 
 
     //Use it in high performance and non-transactional scenario
-    public void sendAsync(String topic, String uuid, String payload, String key, Map<String,Object> headers) {
+    public void sendAsync(String topic, String uuid, String payload, String key, Map<String,String> headers) {
         Message<byte[]> message = buildMessage(topic, uuid, payload, key,headers);
         try {
             sendAsync(message);
@@ -60,7 +60,7 @@ public class KafkaTemplateWrapper {
     }
 
 
-    public SendResult<String, byte[]> send(String topic, String uuid, String payload, String key, Map<String,Object> headers) throws Throwable{
+    public SendResult<String, byte[]> send(String topic, String uuid, String payload, String key, Map<String,String> headers) throws Throwable{
         return send(buildMessage(topic, uuid, payload, key,headers));
     }
 
@@ -77,12 +77,12 @@ public class KafkaTemplateWrapper {
         return result;
     }
 
-    private Message<byte[]> buildMessage(String topic, String uuid, String payload, String key, Map<String,Object> headers) {
+    private Message<byte[]> buildMessage(String topic, String uuid, String payload, String key, Map<String,String> headers) {
         MessageBuilder messageBuilder= MessageBuilder.withPayload(payload.getBytes()).setHeader(KafkaHeaders.TOPIC, topic).setHeader(KafkaHeaders.MESSAGE_KEY, key)
-                .setHeader(TRACE_ID_HEADER, uuid.toString());
+                .setHeader(TRACE_ID_HEADER, uuid);
         if(null!= headers) {
             for (String header : headers.keySet()) {
-                Object headerValue = headers.get(header);
+                String headerValue = headers.get(header);
                 if(null!=headerValue) {
                     messageBuilder = messageBuilder.setHeader(header, headerValue);
                 }

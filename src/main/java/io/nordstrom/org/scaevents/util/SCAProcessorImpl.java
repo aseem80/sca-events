@@ -93,7 +93,7 @@ public class SCAProcessorImpl implements SCAProcessor {
     @Retryable(value = { IOException.class },
             maxAttempts = 5,
             backoff = @Backoff(delay = 1000, multiplier = 2))
-    public String toSCAPayload(Map<String, Object> nodes, Map<String, Object> headers) {
+    public String toSCAPayload(Map<String, Object> nodes, Map<String, String> headers) {
         Map<String, Object> payload = new LinkedHashMap<>();
         Object currentData = nodes.get(CURRENT_DATA);
         String storeNumber = (String) nodes.get(STORE_NUMBER);

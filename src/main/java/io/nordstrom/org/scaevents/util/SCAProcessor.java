@@ -34,7 +34,7 @@ public interface SCAProcessor {
 
     Pair<String, Boolean> isSCANodeChanged(Map<String, Object> nodes);
 
-    String toSCAPayload(Map<String, Object> nodes, Map<String, Object> headers);
+    String toSCAPayload(Map<String, Object> nodes, Map<String, String> headers);
 
 
 }
