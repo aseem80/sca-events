@@ -23,6 +23,7 @@
         <beanstalk.keyName>dsorg-CI-Deployment-NONPROD</beanstalk.keyName>
         <beanstalk.imageId>ami-fab6c182</beanstalk.imageId>
         <beanstalk.environmentType>SingleInstance</beanstalk.environmentType>
+        <beanstalk.vpcId>vpc-7580d312</beanstalk.vpcId>
     </properties>
 
     <scm>
@@ -739,6 +740,7 @@
                     <cnamePrefix>org-sca-event-stream-processor-non-prod</cnamePrefix>
                     <environmentName>non-prod</environmentName>
                     <environmentRef>non-prod</environmentRef>
+                    <solutionStack>64bit Amazon Linux 2017.09 v2.6.8 running Java 8</solutionStack>
                 </configuration>
             </plugin>
 
