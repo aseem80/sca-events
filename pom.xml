@@ -20,7 +20,7 @@
         <beanstalk.versionLabel>${maven.build.timestamp}</beanstalk.versionLabel>
         <beanstalk.env.aws.elasticbeanstalk.application.environment.SPRING_PROFILES_ACTIVE>non-prod</beanstalk.env.aws.elasticbeanstalk.application.environment.SPRING_PROFILES_ACTIVE>
         <beanstalk.env.aws.elasticbeanstalk.application.environment.ORG_SCA_EVENTS_HOME>/var/tmp</beanstalk.env.aws.elasticbeanstalk.application.environment.ORG_SCA_EVENTS_HOME>
-        <beanstalk.keyName>dsorg-CI-Deployment-NONPROD.pem</beanstalk.keyName>
+        <beanstalk.keyName>dsorg-CI-Deployment-NONPROD</beanstalk.keyName>
         <beanstalk.imageId>ami-fab6c182</beanstalk.imageId>
         <beanstalk.environmentType>SingleInstance</beanstalk.environmentType>
     </properties>
@@ -730,6 +730,7 @@
             <plugin>
                 <groupId>br.com.ingenieux</groupId>
                 <artifactId>beanstalk-maven-plugin</artifactId>
+                <version>1.5.0</version>
                 <configuration>
                     <applicationName>org-sca-event-stream-processor</applicationName>
                     <s3Bucket>elasticbeanstalk-us-west-2-383427504773</s3Bucket>
