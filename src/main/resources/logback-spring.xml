@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration debug="true">
 
-    <include resource="org/springframework/boot/logging/logback/base.xml"/>
-
     <springProfile name="default,dev,non-prod">
         <logger name="io" level="INFO" additivity="false">
             <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
