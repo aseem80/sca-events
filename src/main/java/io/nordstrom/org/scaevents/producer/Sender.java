@@ -22,7 +22,7 @@ public class Sender {
 
     private static final Map<String,String> MESSAGE_HEADERS = new LinkedHashMap<>();
     static {
-        MESSAGE_HEADERS.put("SchemaVersion","1.0");
+        MESSAGE_HEADERS.put("SchemaVersion","1");
         MESSAGE_HEADERS.put("MessageMode","event");
         MESSAGE_HEADERS.put("MessageType","org");
     }
