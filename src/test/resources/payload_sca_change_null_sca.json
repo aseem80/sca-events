@@ -76,24 +76,6 @@
     },
     "etc": {
       "etc": "etc"
-    },
-    "sca": {
-      "name": "DOWNTOWN SEATTLE",
-      "typeCode": "FL",
-      "buNumber": "1000",
-      "origCountryCode": "US",
-      "stdzdPostalCode": "981011744",
-      "eligibilityTypes": [
-        {
-          "code": "BPUS"
-        },
-        {
-          "code": "SSUS"
-        },
-        {
-          "code": "SSCA"
-        }
-      ]
     }
   }
 }

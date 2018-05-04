@@ -97,7 +97,6 @@ public class SCAProcessorImpl implements SCAProcessor {
         Map<String, Object> payload = new LinkedHashMap<>();
         Object currentData = nodes.get(CURRENT_DATA);
         String storeNumber = (String) nodes.get(STORE_NUMBER);
-
         if (currentData instanceof Map) {
             Map currentDataMap = (Map) currentData;
             if (!currentDataMap.isEmpty()) {
@@ -108,35 +107,21 @@ public class SCAProcessorImpl implements SCAProcessor {
                     payload.put(STORE_NUMBER, storeNumber);
                 }
                 String timeStamp = (String) nodes.get(TIMESTAMP);
-                String now =scaSimpleDateFormat.format( new Date());
-
                 if (!StringUtils.isBlank(timeStamp)) {
-                    try {
-                        LocalDateTime time = LocalDateTime.parse(timeStamp, canonicalFormatter);
-
-                        Date out = Date.from(time.atZone(ZoneId.systemDefault()).toInstant());
-
-                        String scaDesiredFormatValue = scaSimpleDateFormat.format(out);
-                        payload.put(TIMESTAMP, scaDesiredFormatValue);
-                        headers.put(SCA_TIMESTAMP_KAFKA_HEADER, scaDesiredFormatValue);
-                    } catch(Exception e) {
-                        LOGGER.warn("Error in converting timestamp to desired format for store {}. Hence appending system timestamp {} node", storeNumber, timeStamp);
-                        payload.put(TIMESTAMP, now);
-                        headers.put(SCA_TIMESTAMP_KAFKA_HEADER, now);
-                    }
-
+                    headers.put(SCA_TIMESTAMP_KAFKA_HEADER, timeStamp);
                 } else {
                     LOGGER.warn("Empty {} node", TIMESTAMP);
-                    payload.put(TIMESTAMP, now);
+                    String now =scaSimpleDateFormat.format( new Date());
                     headers.put(SCA_TIMESTAMP_KAFKA_HEADER, now);
                 }
                 Object scaCurrentData = currentDataMap.get(SCA);
-                payload.put(SCA, scaCurrentData);
+                //We don't send null keys as per API contract
+                if(scaCurrentData!=null) {
+                    payload.put(SCA, scaCurrentData);
+                }
             } else {
                 LOGGER.warn("Empty {} node", CURRENT_DATA);
             }
-
-
         }
         try {
             return mapper.writeValueAsString(payload);

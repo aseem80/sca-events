@@ -1,6 +1,6 @@
 {
   "storeNumber": "1",
-  "currentDataUpdatedTimeStamp": "<dateTime in millisecond or nanosecond format>",
+  "currentDataUpdatedTimeStampMS": "<dateTime in millisecond or nanosecond format>",
   "rootLevelChanges": [
     {
       "attribute": "name"

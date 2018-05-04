@@ -54,6 +54,15 @@ public class SCAProcessorTest {
         assertEquals(scaPayloadExpected, scaPayload);
     }
 
+    @Test
+    public void toSCAPayloadNullScaNode() throws IOException{
+        String canonicalPayload = FileUtils.readFileToString(new ClassPathResource("payload_sca_change_null_sca.json").getFile(), StandardCharsets.UTF_8);
+        Map<String,Object> canonicalMap = scaProcessor.fromCanonicalPayload("1", canonicalPayload);
+        String scaPayload = scaProcessor.toSCAPayload(canonicalMap, new HashMap<>());
+        String scaPayloadExpected = FileUtils.readFileToString(new ClassPathResource("sca_payload_sca_node_absent.json").getFile(), StandardCharsets.UTF_8);
+        assertEquals(scaPayloadExpected, scaPayload);
+    }
+
 
 
 }
