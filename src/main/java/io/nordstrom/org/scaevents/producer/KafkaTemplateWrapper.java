@@ -16,6 +16,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
+import java.time.Instant;
+import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -78,8 +80,9 @@ public class KafkaTemplateWrapper {
     }
 
     private Message<byte[]> buildMessage(String topic, String uuid, String payload, String key, Map<String,String> headers) {
+        Instant instant = Instant.now();
         MessageBuilder messageBuilder= MessageBuilder.withPayload(payload.getBytes()).setHeader(KafkaHeaders.TOPIC, topic).setHeader(KafkaHeaders.MESSAGE_KEY, key)
-                .setHeader(TRACE_ID_HEADER, uuid.getBytes());
+                .setHeader(TRACE_ID_HEADER, uuid.getBytes()).setHeader(KafkaHeaders.TIMESTAMP, instant.toEpochMilli());
         if(null!= headers) {
             for (String header : headers.keySet()) {
                 String headerValue = headers.get(header);
