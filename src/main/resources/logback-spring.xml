@@ -3,7 +3,7 @@
 
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
-    <springProfile name="default,dev">
+    <springProfile name="default,dev,non-prod">
         <logger name="io" level="INFO" additivity="false">
             <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
                 <file>${ORG_SCA_EVENTS_HOME:-/var/tmp}/logs/sca-events/sca-events.log</file>
