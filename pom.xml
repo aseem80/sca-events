@@ -20,6 +20,9 @@
         <beanstalk.versionLabel>${maven.build.timestamp}</beanstalk.versionLabel>
         <beanstalk.env.aws.elasticbeanstalk.application.environment.SPRING_PROFILES_ACTIVE>non-prod</beanstalk.env.aws.elasticbeanstalk.application.environment.SPRING_PROFILES_ACTIVE>
         <beanstalk.env.aws.elasticbeanstalk.application.environment.ORG_SCA_EVENTS_HOME>/tmp</beanstalk.env.aws.elasticbeanstalk.application.environment.ORG_SCA_EVENTS_HOME>
+        <beanstalk.keyName>dsorg-CI-Deployment-NONPROD.pem</beanstalk.keyName>
+        <beanstalk.imageId>ami-fab6c182</beanstalk.imageId>
+        <beanstalk.environmentType>SingleInstance</beanstalk.environmentType>
     </properties>
 
     <scm>
@@ -735,13 +738,6 @@
                     <cnamePrefix>org-sca-event-stream-processor-non-prod</cnamePrefix>
                     <environmentName>non-prod</environmentName>
                     <environmentRef>non-prod</environmentRef>
-                    <versionLabel>${project.version}</versionLabel>
-                    <solutionStack>64bit Amazon Linux 2017.09 v2.6.8 running Java 8</solutionStack>
-                    <optionSettings>
-                        <namespace>aws:autoscaling:launchconfiguration</namespace>
-                        <optionName>EC2KeyName</optionName>
-                        <value>dsorg-CI-Deployment-NONPROD.pem</value>
-                    </optionSettings>
                 </configuration>
             </plugin>
 
