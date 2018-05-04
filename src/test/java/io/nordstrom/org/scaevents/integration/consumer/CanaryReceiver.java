@@ -35,20 +35,20 @@ public class CanaryReceiver {
                         @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
                         @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
                         @Header(KafkaHeaders.RECEIVED_TIMESTAMP) long ts,
-                        @Header("TraceID") String uuid,
-                        @Header("SchemaVersion") String schemaVersion,
-                        @Header("MessageMode") String messageMode,
-                        @Header("MessageType") String messageType,
-                        @Header("ValueUpdatedTime") String valueUpdatedTime) {
+                        @Header("TraceID") byte[] uuid,
+                        @Header("SchemaVersion") byte[] schemaVersion,
+                        @Header("MessageMode") byte[] messageMode,
+                        @Header("MessageType") byte[] messageType,
+                        @Header("ValueUpdatedTime") byte[] valueUpdatedTime) {
         LOGGER.info("received payload='{}'", payload);
         try {
             Path path  = OrgKafkaAppTestUtil.tempTestFilePath();
             assertEquals("1", key);
-            assertTrue(!StringUtils.isBlank(uuid));
-            assertEquals("1.0", schemaVersion);
-            assertEquals("event", messageMode);
-            assertEquals("org", messageType);
-            assertEquals("2018-05-03T17:05:31.363Z", valueUpdatedTime);
+            assertTrue(!StringUtils.isBlank(new String(uuid)));
+            assertEquals("1.0", new String(schemaVersion));
+            assertEquals("event", new String(messageMode));
+            assertEquals("org", new String(messageType));
+            assertEquals("2018-05-03T17:05:31.363Z", new String(valueUpdatedTime));
             Files.write(path, payload,
                     StandardOpenOption.CREATE,
                     StandardOpenOption.TRUNCATE_EXISTING );

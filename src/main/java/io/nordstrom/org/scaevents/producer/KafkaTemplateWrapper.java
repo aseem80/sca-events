@@ -79,12 +79,12 @@ public class KafkaTemplateWrapper {
 
     private Message<byte[]> buildMessage(String topic, String uuid, String payload, String key, Map<String,String> headers) {
         MessageBuilder messageBuilder= MessageBuilder.withPayload(payload.getBytes()).setHeader(KafkaHeaders.TOPIC, topic).setHeader(KafkaHeaders.MESSAGE_KEY, key)
-                .setHeader(TRACE_ID_HEADER, uuid);
+                .setHeader(TRACE_ID_HEADER, uuid.getBytes());
         if(null!= headers) {
             for (String header : headers.keySet()) {
                 String headerValue = headers.get(header);
                 if(null!=headerValue) {
-                    messageBuilder = messageBuilder.setHeader(header, headerValue);
+                    messageBuilder = messageBuilder.setHeader(header, headerValue.getBytes());
                 }
             }
         }
