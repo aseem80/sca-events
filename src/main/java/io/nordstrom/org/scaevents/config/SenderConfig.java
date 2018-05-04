@@ -49,6 +49,20 @@ public class SenderConfig {
     private String sslKeyPassword;
     @Value("${spring.kafka.producer.ssl.keystore.type:JKS}")
     private String sslKeystoreType;
+    @Value("${spring.kafka.producer.retry.backoff.ms:200}")
+    private Integer retryBackOffInMillis;
+    @Value("${spring.kafka.producer.request.timeout.ms:30000}")
+    private Integer requestTimeOutInMillis;
+    @Value("${spring.kafka.producer.linger.ms:100}")
+    private Integer lingerInMillis;
+    @Value("${spring.kafka.producer.connection.max.idle.ms:600000}")
+    private Integer connectionMaxIdleInMillis;
+    @Value("${spring.kafka.producer.retries:15}")
+    private Integer retries;
+    @Value("${spring.kafka.producer.maxInFlightRequestsPerConnection:1}")
+    private Integer maxInFlightRequestsPerConnection;
+    @Value("${spring.kafka.producer.clientId:org-streamprocessor}")
+    private String clientId;
 
     @Bean
     public Map<String, Object> producerConfigs() {
@@ -58,6 +72,15 @@ public class SenderConfig {
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ByteArraySerializer.class);
+        props.put(ProducerConfig.RETRY_BACKOFF_MS_CONFIG, retryBackOffInMillis);
+        props.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, requestTimeOutInMillis);
+        props.put(ProducerConfig.LINGER_MS_CONFIG, lingerInMillis);
+        props.put(ProducerConfig.CONNECTIONS_MAX_IDLE_MS_CONFIG, connectionMaxIdleInMillis);
+        props.put(ProducerConfig.RETRIES_CONFIG, retries);
+        props.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, maxInFlightRequestsPerConnection);
+        props.put(ProducerConfig.CLIENT_ID_CONFIG, clientId);
+
+
 
         if(isSSLEnabled || StringUtils.contains(bootstrapServers, PropertiesUtil.PROTON_URL_TEXT)) {
             setSSL(props);
