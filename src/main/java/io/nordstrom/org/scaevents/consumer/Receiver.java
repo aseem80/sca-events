@@ -53,7 +53,7 @@ public class Receiver {
             if (receivedOffsetHeaderValue != null) {
                 receivedOffset = receivedOffsetHeaderValue.toString();
             }
-            LOGGER.info("received message key : {}, partition : {}, offset : {}  ", receivedMessageKey, receivedPartitionId, receivedOffset);
+            LOGGER.info("Received message key(store) : {}, partition : {}, offset : {}  ", receivedMessageKey, receivedPartitionId, receivedOffset);
 
             consume(receivedMessageKey, message.getPayload());});
     }
