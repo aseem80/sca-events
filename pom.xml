@@ -27,8 +27,9 @@
         <beanstalk.Subnets>subnet-3fc6a858,subnet-677bfb2e,subnet-677bfb2e</beanstalk.Subnets>
         <beanstalk.env.aws.ec2.vpc.Subnets>subnet-3fc6a858,subnet-677bfb2e,subnet-677bfb2e</beanstalk.env.aws.ec2.vpc.Subnets>
         <beanstalk.env.aws.ec2.vpc.ELBSubnets>subnet-3fc6a858,subnet-677bfb2e,subnet-677bfb2e</beanstalk.env.aws.ec2.vpc.ELBSubnets>
+        <beanstalk.iamInstanceProfile>arn:aws:iam::383427504773:role/CI-Team-default-nonprod</beanstalk.iamInstanceProfile>
         <beanstalk.instanceType>t2.medium</beanstalk.instanceType>
-        <beanstalk.securityGroups>sg-d84729a5</beanstalk.securityGroups>
+        <beanstalk.securityGroups>sg-d84729a5,sg-4352603d</beanstalk.securityGroups>
     </properties>
 
     <scm>
