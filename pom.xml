@@ -23,12 +23,15 @@
         <beanstalk.keyName>dsorg-CI-Deployment-NONPROD</beanstalk.keyName>
         <beanstalk.imageId>ami-fab6c182</beanstalk.imageId>
         <beanstalk.environmentType>SingleInstance</beanstalk.environmentType>
+        <beanstalk.env.aws.elasticbeanstalk.environment.ServiceRole>aws-elasticbeanstalk-service-role</beanstalk.env.aws.elasticbeanstalk.environment.ServiceRole>
         <beanstalk.securityGroups>sg-d84729a5</beanstalk.securityGroups>
         <beanstalk.vpcId>vpc-7580d312</beanstalk.vpcId>
         <beanstalk.Subnets>subnet-3fc6a858,subnet-677bfb2e,subnet-677bfb2e</beanstalk.Subnets>
         <beanstalk.env.aws.ec2.vpc.Subnets>subnet-3fc6a858,subnet-677bfb2e,subnet-677bfb2e</beanstalk.env.aws.ec2.vpc.Subnets>
         <beanstalk.env.aws.ec2.vpc.ELBSubnets>subnet-3fc6a858,subnet-677bfb2e,subnet-677bfb2e</beanstalk.env.aws.ec2.vpc.ELBSubnets>
-        <beanstalk.iamInstanceProfile>arn:aws:iam::383427504773:role/CI-Team-default-nonprod</beanstalk.iamInstanceProfile>
+        <beanstalk.env.aws.ec2.vpc.ELBScheme>internal</beanstalk.env.aws.ec2.vpc.ELBScheme>
+        <beanstalk.env.aws.ec2.vpc.AssociatePublicIpAddress>false</beanstalk.env.aws.ec2.vpc.AssociatePublicIpAddress>
+        <beanstalk.iamInstanceProfile>arn:aws:iam::383427504773:instance-profile/CI-Team-default-resources-CITeamDefaultIP-12T1XMMKA5XGY</beanstalk.iamInstanceProfile>
         <beanstalk.instanceType>t2.medium</beanstalk.instanceType>
     </properties>
 
