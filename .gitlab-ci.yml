@@ -11,7 +11,7 @@ cache:
 build:
   stage: build
   script:
-    - mvn $MAVEN_CLI_OPTS install
+    - mvn $MAVEN_CLI_OPTS clean install
 
 deploy_non_prod:
   stage: deploy
