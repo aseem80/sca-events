@@ -11,9 +11,15 @@ cache:
     - .m2/repository/
     - target/
 
-build:
+build_non_prod:
   tags:
     - non-prod-001
+  stage: build
+  script:
+    - mvn $MAVEN_CLI_OPTS clean install
+
+build_non_prod:
+  tags:
     - prod-001
   stage: build
   script:
