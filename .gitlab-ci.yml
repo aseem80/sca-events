@@ -15,4 +15,4 @@ build:
 
 deploy_non_prod:
   script:
-    - mvn beanstalk:upload-source-bundle beanstalk:create-application-version beanstalk:replace-environment -Dbeanstalk.environmentRef=non-prod
+    - mvn beanstalk:upload-source-bundle beanstalk:create-application-version beanstalk:replace-environment -Dbeanstalk.environmentRef=non-prod -Dspring.profiles.active=non-prod -DkeyName=dsorg-CI-Deployment-NONPROD
