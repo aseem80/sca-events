@@ -1,4 +1,6 @@
-image: maven:latest
+stages:
+  - build
+  - deploy
 
 variables:
   MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
@@ -9,10 +11,20 @@ cache:
     - target/
 
 build:
+  tag:
+    - non-prod-001
+    - prod-001
   stage: build
   script:
     - mvn $MAVEN_CLI_OPTS clean install
 
 deploy_non_prod:
+  tag: non-prod-001
   script:
     - mvn -Pdeploy-non-prod beanstalk:upload-source-bundle beanstalk:create-application-version beanstalk:replace-environment
+
+deploy_prod:
+  tag: prod-001
+  script:
+    - mvn -Pdeploy-prod beanstalk:upload-source-bundle beanstalk:create-application-version beanstalk:replace-environment
+  when: manual
