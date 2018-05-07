@@ -20,16 +20,16 @@
         <beanstalk.versionLabel>${maven.build.timestamp}</beanstalk.versionLabel>
         <beanstalk.env.aws.elasticbeanstalk.application.environment.SPRING_PROFILES_ACTIVE>${spring.profiles.active}</beanstalk.env.aws.elasticbeanstalk.application.environment.SPRING_PROFILES_ACTIVE>
         <beanstalk.env.aws.elasticbeanstalk.application.environment.ORG_SCA_EVENTS_HOME>/var/tmp</beanstalk.env.aws.elasticbeanstalk.application.environment.ORG_SCA_EVENTS_HOME>
-        <beanstalk.keyName>${keyName}</beanstalk.keyName>
-        <beanstalk.imageId>ami-fab6c182</beanstalk.imageId>
-        <beanstalk.environmentType>SingleInstance</beanstalk.environmentType>
-        <beanstalk.vpcId>vpc-7580d312</beanstalk.vpcId>
-        <beanstalk.iamInstanceProfile>arn:aws:iam::383427504773:instance-profile/CI-Team-default-resources-CITeamDefaultIP-12T1XMMKA5XGY</beanstalk.iamInstanceProfile>
-        <beanstalk.instanceType>t2.medium</beanstalk.instanceType>
+        <beanstalk.keyName>${beanstalk.keyName}</beanstalk.keyName>
+        <beanstalk.imageId>${beanstalk.imageId}</beanstalk.imageId>
+        <beanstalk.environmentType>${beanstalk.environmentType}</beanstalk.environmentType>
+        <beanstalk.vpcId>${beanstalk.vpcId}</beanstalk.vpcId>
+        <beanstalk.iamInstanceProfile>${beanstalk.iamInstanceProfile}</beanstalk.iamInstanceProfile>
+        <beanstalk.instanceType>${beanstalk.instanceType}</beanstalk.instanceType>
 <!--
         <beanstalk.env.aws.elasticbeanstalk.environment.ServiceRole>aws-elasticbeanstalk-service-role</beanstalk.env.aws.elasticbeanstalk.environment.ServiceRole>
 -->
-        <beanstalk.env.aws.ec2.vpc.Subnets>subnet-3fc6a858,subnet-727efe3b</beanstalk.env.aws.ec2.vpc.Subnets>
+        <beanstalk.env.aws.ec2.vpc.Subnets>${beanstalk.env.aws.ec2.vpc.Subnets}</beanstalk.env.aws.ec2.vpc.Subnets>
         <!--       <beanstalk.env.aws.ec2.vpc.ELBSubnets>subnet-3fc6a858,subnet-677bfb2e,subnet-677bfb2e</beanstalk.env.aws.ec2.vpc.ELBSubnets>
                <beanstalk.env.aws.ec2.vpc.ELBScheme>internal</beanstalk.env.aws.ec2.vpc.ELBScheme>
                <beanstalk.env.aws.ec2.vpc.AssociatePublicIpAddress>false</beanstalk.env.aws.ec2.vpc.AssociatePublicIpAddress>-->
@@ -266,6 +266,24 @@
             <id>deploy-non-prod</id>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>properties-maven-plugin</artifactId>
+                        <version>1.0.0</version>
+                        <executions>
+                            <execution>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>read-project-properties</goal>
+                                </goals>
+                                <configuration>
+                                    <files>
+                                        <file>deploy/non-prod/dev.properties</file>
+                                    </files>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
                     <plugin>
                         <groupId>br.com.ingenieux</groupId>
                         <artifactId>beanstalk-maven-plugin</artifactId>
