@@ -109,10 +109,11 @@ public class SCAProcessorImpl implements SCAProcessor {
                 String timeStamp = (String) nodes.get(TIMESTAMP);
                 if (!StringUtils.isBlank(timeStamp)) {
                     headers.put(SCA_TIMESTAMP_KAFKA_HEADER, timeStamp);
+                    LOGGER.info("store={} , currentDataUpdatedTimeStampMS={}", storeNumber, timeStamp);
                 } else {
-                    LOGGER.warn("Empty {} node", TIMESTAMP);
                     String now =scaSimpleDateFormat.format( new Date());
                     headers.put(SCA_TIMESTAMP_KAFKA_HEADER, now);
+                    LOGGER.info("Empty {} node for store={}. Populating current time={}", TIMESTAMP, storeNumber, now);
                 }
                 Object scaCurrentData = currentDataMap.get(SCA);
                 //We don't send null keys as per API contract
