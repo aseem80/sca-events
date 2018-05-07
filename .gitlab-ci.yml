@@ -18,12 +18,6 @@ build_non_prod:
   script:
     - mvn $MAVEN_CLI_OPTS clean install
 
-build_non_prod:
-  tags:
-    - prod-001
-  stage: build
-  script:
-    - mvn $MAVEN_CLI_OPTS clean install
 
 deploy_non_prod:
   stage: deploy
@@ -31,6 +25,14 @@ deploy_non_prod:
     - non-prod-001
   script:
     - mvn -Pdeploy-non-prod beanstalk:upload-source-bundle beanstalk:create-application-version beanstalk:replace-environment
+
+build_prod:
+  tags:
+    - prod-001
+  stage: build
+  script:
+    - mvn $MAVEN_CLI_OPTS clean install
+  when: manual
 
 deploy_prod:
   stage: deploy
