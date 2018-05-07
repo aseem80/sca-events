@@ -35,7 +35,7 @@ public class ReceiverConfig {
     @Value("${spring.kafka.consumer.bootstrap-servers}")
     private String bootstrapServers;
 
-    @Value("${spring.kafka.consumer.group-id:proton-og-consumer-1}")
+    @Value("${spring.kafka.consumer.group-id:proton-og-consumer}")
     private String consumerGroupId;
 
     @Value("${spring.kafka.consumer.ssl.enabled}")
@@ -73,7 +73,6 @@ public class ReceiverConfig {
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         // allows a pool of processes to divide the work of consuming and processing records
         props.put(ConsumerConfig.GROUP_ID_CONFIG, consumerGroupId);
-        // automatically reset the offset to the earliest offset
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, PropertiesUtil.AUTO_OFFSET_RESET_CONFIG_VALUE);
         if(isSSLEnabled || StringUtils.contains(bootstrapServers, PropertiesUtil.PROTON_URL_TEXT)) {
             setSSL(props);

@@ -82,7 +82,7 @@ public class SenderConfig {
 
 
 
-        if(isSSLEnabled || StringUtils.contains(bootstrapServers, PropertiesUtil.PROTON_URL_TEXT)) {
+        if(isSSLEnabled || StringUtils.contains(bootstrapServers, PropertiesUtil.SCA_URL_TEXT)) {
             setSSL(props);
         }
 

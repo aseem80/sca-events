@@ -15,6 +15,6 @@ public class PropertiesUtil {
     public static final String SSL_KEY_PASSWORD = "ssl.key.password";
     public static final String SSL_KEYSTORE_TYPE = "ssl.keystore.type";
 
-    public static final String AUTO_OFFSET_RESET_CONFIG_VALUE = "earliest";
+    public static final String AUTO_OFFSET_RESET_CONFIG_VALUE = "latest";
 
 }
