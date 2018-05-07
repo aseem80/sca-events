@@ -16,4 +16,5 @@ build:
 deploy_non_prod:
   stage: deploy
   script:
+    - mvn clean
     - mvn beanstalk:upload-source-bundle beanstalk:create-application-version beanstalk:replace-environment -Dbeanstalk.environmentRef=non-prod
