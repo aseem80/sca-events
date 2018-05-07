@@ -19,17 +19,17 @@
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <beanstalk.versionLabel>${maven.build.timestamp}</beanstalk.versionLabel>
         <beanstalk.env.aws.elasticbeanstalk.application.environment.SPRING_PROFILES_ACTIVE>${spring.profiles.active}</beanstalk.env.aws.elasticbeanstalk.application.environment.SPRING_PROFILES_ACTIVE>
-        <beanstalk.env.aws.elasticbeanstalk.application.environment.ORG_SCA_EVENTS_HOME>/var/tmp</beanstalk.env.aws.elasticbeanstalk.application.environment.ORG_SCA_EVENTS_HOME>
-        <beanstalk.keyName>${beanstalk.keyName}</beanstalk.keyName>
-        <beanstalk.imageId>${beanstalk.imageId}</beanstalk.imageId>
-        <beanstalk.environmentType>${beanstalk.environmentType}</beanstalk.environmentType>
-        <beanstalk.vpcId>${beanstalk.vpcId}</beanstalk.vpcId>
-        <beanstalk.iamInstanceProfile>${beanstalk.iamInstanceProfile}</beanstalk.iamInstanceProfile>
-        <beanstalk.instanceType>${beanstalk.instanceType}</beanstalk.instanceType>
+        <beanstalk.env.aws.elasticbeanstalk.application.environment.ORG_SCA_EVENTS_HOME>${maven.aws.elasticbeanstalk.application.environment.ORG_SCA_EVENTS_HOME}</beanstalk.env.aws.elasticbeanstalk.application.environment.ORG_SCA_EVENTS_HOME>
+        <beanstalk.keyName>${maven.beanstalk.keyName}</beanstalk.keyName>
+        <beanstalk.imageId>${maven.beanstalk.imageId}</beanstalk.imageId>
+        <beanstalk.environmentType>${maven.beanstalk.environmentType}</beanstalk.environmentType>
+        <beanstalk.vpcId>${maven.beanstalk.vpcId}</beanstalk.vpcId>
+        <beanstalk.iamInstanceProfile>${maven.beanstalk.iamInstanceProfile}</beanstalk.iamInstanceProfile>
+        <beanstalk.instanceType>${maven.beanstalk.instanceType}</beanstalk.instanceType>
 <!--
         <beanstalk.env.aws.elasticbeanstalk.environment.ServiceRole>aws-elasticbeanstalk-service-role</beanstalk.env.aws.elasticbeanstalk.environment.ServiceRole>
 -->
-        <beanstalk.env.aws.ec2.vpc.Subnets>${beanstalk.env.aws.ec2.vpc.Subnets}</beanstalk.env.aws.ec2.vpc.Subnets>
+        <beanstalk.env.aws.ec2.vpc.Subnets>${maven.beanstalk.env.aws.ec2.vpc.Subnets}</beanstalk.env.aws.ec2.vpc.Subnets>
         <!--       <beanstalk.env.aws.ec2.vpc.ELBSubnets>subnet-3fc6a858,subnet-677bfb2e,subnet-677bfb2e</beanstalk.env.aws.ec2.vpc.ELBSubnets>
                <beanstalk.env.aws.ec2.vpc.ELBScheme>internal</beanstalk.env.aws.ec2.vpc.ELBScheme>
                <beanstalk.env.aws.ec2.vpc.AssociatePublicIpAddress>false</beanstalk.env.aws.ec2.vpc.AssociatePublicIpAddress>-->
