@@ -14,7 +14,5 @@ build:
     - mvn $MAVEN_CLI_OPTS clean install
 
 deploy_non_prod:
-  stage: deploy
   script:
-    - mvn clean
-    - mvn beanstalk:upload-source-bundle beanstalk:create-application-version beanstalk:replace-environment -Dbeanstalk.environmentRef=non-prod
+    - mvn beanstalk:upload-source-bundle beanstalk:create-application-version beanstalk:update-environment -Dbeanstalk.environmentRef=non-prod
