@@ -25,6 +25,8 @@ deploy_non_prod:
     - non-prod-001
   script:
     - mvn -Pdeploy-non-prod beanstalk:upload-source-bundle beanstalk:create-application-version beanstalk:replace-environment
+  environment:
+      name: non-prod
 
 build_prod:
   tags:
@@ -39,5 +41,7 @@ deploy_prod:
   tags:
     - prod-001
   script:
-    - mvn -Pdeploy-prod beanstalk:upload-source-bundle beanstalk:create-application-version beanstalk:replace-environment
+    - mvn -Pdeploy-prod beanstalk:upload-source-bundle beanstalk:create-application-version beanstalk:replace-environment beanstalk:tag-environment
+  environment:
+      name: non-prod
   when: manual
