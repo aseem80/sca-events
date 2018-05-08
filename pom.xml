@@ -22,6 +22,8 @@
         <beanstalk.env.aws.elasticbeanstalk.application.environment.ORG_SCA_EVENTS_HOME>${maven.aws.elasticbeanstalk.application.environment.ORG_SCA_EVENTS_HOME}</beanstalk.env.aws.elasticbeanstalk.application.environment.ORG_SCA_EVENTS_HOME>
         <beanstalk.env.aws.elasticbeanstalk.application.environment.ELASTIC_HOST>${maven.filebeat.dest.host}</beanstalk.env.aws.elasticbeanstalk.application.environment.ELASTIC_HOST>
         <beanstalk.env.aws.elasticbeanstalk.application.environment.DATALENS_API_KEY>${maven.filebeat.dest.api.key}</beanstalk.env.aws.elasticbeanstalk.application.environment.DATALENS_API_KEY>
+        <beanstalk.env.aws.elasticbeanstalk.application.environment.ENV_CLASS>${maven.filebeat.fields.env.class}</beanstalk.env.aws.elasticbeanstalk.application.environment.ENV_CLASS>
+        <beanstalk.env.aws.elasticbeanstalk.application.environment.ENV_SHORT_NAME>${maven.filebeat.fields.env.short.name}</beanstalk.env.aws.elasticbeanstalk.application.environment.ENV_SHORT_NAME>
 
         <beanstalk.keyName>${maven.beanstalk.keyName}</beanstalk.keyName>
         <beanstalk.imageId>${maven.beanstalk.imageId}</beanstalk.imageId>
