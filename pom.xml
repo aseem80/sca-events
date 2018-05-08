@@ -268,6 +268,31 @@
             <build>
                 <plugins>
                     <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>prepare</id>
+                                <phase>package</phase>
+                                <configuration>
+                                    <tasks>
+                                        <unzip src="${project.build.directory}/${project.build.finalName}.jar" dest="${project.build.directory}/${project.build.finalName}" />
+                                        <copy todir="${project.build.directory}/${project.build.finalName}/" overwrite="false">
+                                            <fileset dir="./" includes=".ebextensions/**"/>
+                                        </copy>
+                                        <!-- <jar jarfile="${project.build.directory}/${project.build.finalName}.jar" basedir="${project.build.directory}/${project.build.finalName}"/>-->
+                                        <zip compress="false" destfile="${project.build.directory}/${project.build.finalName}.zip" basedir="${project.build.directory}/${project.build.finalName}"/>
+                                    </tasks>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>properties-maven-plugin</artifactId>
                         <version>1.0.0</version>
@@ -293,7 +318,8 @@
                             <applicationName>org-sca-event-stream-processor</applicationName>
                             <s3Bucket>elasticbeanstalk-us-west-2-383427504773</s3Bucket>
                             <regionName>us-west-2</regionName>
-                            <s3Key>${project.artifactId}/${project.build.finalName}-${maven.build.timestamp}.jar</s3Key>
+                            <artifactFile>${project.build.directory}/${project.build.finalName}.zip</artifactFile>
+                            <s3Key>${project.artifactId}/${project.build.finalName}-${maven.build.timestamp}.zip</s3Key>
                             <cnamePrefix>org-sca-event-stream-processor-non-prod</cnamePrefix>
                             <environmentName>non-prod</environmentName>
                             <environmentRef>non-prod</environmentRef>
@@ -502,45 +528,6 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
             <plugin>
-                <!-- The build helper determines the build version -->
-                <!-- 'mvn build-helper:parse-version' -->
-                <!-- this is stored in the POM context as "parsedVersion" -->
-                <!-- We need this in order to output our current version without the -SNAPSHOT suffix -->
-                <!-- as part of our git/docker/beanstalk version tagging strategy -->
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.10</version>
-                <executions>
-                    <execution>
-                        <id>parse-version</id>
-                        <goals>
-                            <goal>parse-version</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.4.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <executable>echo</executable>
-                    <arguments>
-                        <argument>
-                            <!-- These properties are set by build-helper:parse-version -->
-                            ${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}
-                        </argument>
-                    </arguments>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>pl.project13.maven</groupId>
                 <artifactId>git-commit-id-plugin</artifactId>
                 <version>2.2.4</version>
@@ -597,8 +584,6 @@
                     <evaluateOnCommit>HEAD</evaluateOnCommit>
                 </configuration>
             </plugin>
-
-
         </plugins>
     </build>
 
