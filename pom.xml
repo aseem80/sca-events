@@ -26,6 +26,7 @@
         <beanstalk.vpcId>${maven.beanstalk.vpcId}</beanstalk.vpcId>
         <beanstalk.iamInstanceProfile>${maven.beanstalk.iamInstanceProfile}</beanstalk.iamInstanceProfile>
         <beanstalk.instanceType>${maven.beanstalk.instanceType}</beanstalk.instanceType>
+        <beanstalk.tag.scheduler-asg-desiredminmax>opt-out</beanstalk.tag.scheduler-asg-desiredminmax>
 <!--
         <beanstalk.env.aws.elasticbeanstalk.environment.ServiceRole>aws-elasticbeanstalk-service-role</beanstalk.env.aws.elasticbeanstalk.environment.ServiceRole>
 -->
@@ -297,9 +298,6 @@
                             <environmentName>non-prod</environmentName>
                             <environmentRef>non-prod</environmentRef>
                             <solutionStack>64bit Amazon Linux 2017.09 v2.6.8 running Java 8</solutionStack>
-                            <tags>
-                                <Uses>scheduler-asg-desiredminmax, opt-out</Uses>
-                            </tags>
                         </configuration>
                     </plugin>
                 </plugins>
