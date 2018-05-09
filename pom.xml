@@ -24,6 +24,8 @@
         <beanstalk.env.aws.elasticbeanstalk.application.environment.TEST_NAME>${maven.test.env.test.name}</beanstalk.env.aws.elasticbeanstalk.application.environment.TEST_NAME>
         <beanstalk.env.aws.autoscaling.updatepolicy.rollingupdate.RollingUpdateType>Immutable</beanstalk.env.aws.autoscaling.updatepolicy.rollingupdate.RollingUpdateType>
         <beanstalk.env.aws.elasticbeanstalk.command.DeploymentPolicy>Immutable</beanstalk.env.aws.elasticbeanstalk.command.DeploymentPolicy>
+        <beanstalk.env.aws.elasticbeanstalk.healthreporting.system.SystemType>enhanced</beanstalk.env.aws.elasticbeanstalk.healthreporting.system.SystemType>
+
         <beanstalk.keyName>${maven.beanstalk.keyName}</beanstalk.keyName>
         <beanstalk.imageId>${maven.beanstalk.imageId}</beanstalk.imageId>
         <beanstalk.environmentType>${maven.beanstalk.environmentType}</beanstalk.environmentType>
