@@ -36,6 +36,7 @@
 
         <beanstalk.applicationHealthCheckURL>/actuator/health</beanstalk.applicationHealthCheckURL>
         <beanstalk.env.aws.ec2.vpc.Subnets>${maven.beanstalk.env.aws.ec2.vpc.Subnets}</beanstalk.env.aws.ec2.vpc.Subnets>
+        <beanstalk.env.aws.elasticbeanstalk.environment.ServiceRole>aws-elasticbeanstalk-service-role</beanstalk.env.aws.elasticbeanstalk.environment.ServiceRole>
 
     </properties>
 

@@ -43,7 +43,7 @@ public class Receiver {
                 receivedMessageKey = receivedMessageKeyHeaderValue.toString();
             }
             String receivedPartitionId = "";
-            Object receivedParitionIdHeaderValue = headers.get(KafkaHeaders.PARTITION_ID);
+            Object receivedParitionIdHeaderValue = headers.get(KafkaHeaders.RECEIVED_PARTITION_ID);
             if (receivedParitionIdHeaderValue != null) {
                 receivedPartitionId = receivedParitionIdHeaderValue.toString();
             }

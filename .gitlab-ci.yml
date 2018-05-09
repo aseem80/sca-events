@@ -43,5 +43,5 @@ deploy_prod:
   script:
     - mvn -Pdeploy-prod initialize beanstalk:upload-source-bundle beanstalk:create-application-version beanstalk:replace-environment beanstalk:tag-environment
   environment:
-      name: non-prod
+      name: prod
   when: manual
