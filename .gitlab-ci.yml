@@ -16,7 +16,7 @@ build_non_prod:
     - non-prod-001
   stage: build
   script:
-    - mvn $MAVEN_CLI_OPTS clean install -DskipTests
+    - mvn $MAVEN_CLI_OPTS clean install
 
 
 deploy_non_prod:

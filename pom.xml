@@ -337,13 +337,15 @@
                         <version>1.5.0</version>
                         <configuration>
                             <applicationName>org-sca-event-stream-processor</applicationName>
-                            <s3Bucket>elasticbeanstalk-us-west-2-383427504773</s3Bucket>
+                            <s3Bucket>elasticbeanstalk-us-west-2-748949561341</s3Bucket>
                             <regionName>us-west-2</regionName>
-                            <s3Key>${project.artifactId}/${project.build.finalName}-${maven.build.timestamp}.jar</s3Key>
-                            <cnamePrefix>org-sca-event-stream-processor-non-prod</cnamePrefix>
-                            <environmentName>non-prod</environmentName>
-                            <environmentRef>non-prod</environmentRef>
+                            <artifactFile>${project.build.directory}/${project.build.finalName}.zip</artifactFile>
+                            <s3Key>${project.artifactId}/${project.build.finalName}-${maven.build.timestamp}.zip</s3Key>
+                            <cnamePrefix>org-sca-event-stream-processor-prod</cnamePrefix>
+                            <environmentName>prod</environmentName>
+                            <environmentRef>prod</environmentRef>
                             <solutionStack>64bit Amazon Linux 2017.09 v2.6.8 running Java 8</solutionStack>
+                            <copyOptionSettings>false</copyOptionSettings>
                         </configuration>
                     </plugin>
 
