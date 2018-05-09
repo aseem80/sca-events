@@ -102,7 +102,10 @@ public class KafkaTemplateWrapper {
 
             @Override
             public void onSuccess(SendResult<String, byte[]> result) {
-                LOGGER.info("Successfully published payload ");
+                MessageHeaders headers = message.getHeaders();
+                String key = (String) headers.get(KafkaHeaders.MESSAGE_KEY);
+                String uuid = (String) headers.get(TRACE_ID_HEADER);
+                LOGGER.info("Successfully published payload for key:{}, TraceId:{} ", key, uuid);
             }
 
             @Override

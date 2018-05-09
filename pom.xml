@@ -32,6 +32,7 @@
         <beanstalk.iamInstanceProfile>${maven.beanstalk.iamInstanceProfile}</beanstalk.iamInstanceProfile>
         <beanstalk.instanceType>${maven.beanstalk.instanceType}</beanstalk.instanceType>
         <beanstalk.tag.scheduler-asg-desiredminmax>opt-out</beanstalk.tag.scheduler-asg-desiredminmax>
+        <beanstalk.applicationHealthCheckURL>/actuator/health</beanstalk.applicationHealthCheckURL>
 <!--
         <beanstalk.env.aws.elasticbeanstalk.environment.ServiceRole>aws-elasticbeanstalk-service-role</beanstalk.env.aws.elasticbeanstalk.environment.ServiceRole>
 -->
