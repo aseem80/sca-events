@@ -20,8 +20,6 @@
         <beanstalk.versionLabel>${maven.build.timestamp}</beanstalk.versionLabel>
         <beanstalk.env.aws.elasticbeanstalk.application.environment.SPRING_PROFILES_ACTIVE>${spring.profiles.active}</beanstalk.env.aws.elasticbeanstalk.application.environment.SPRING_PROFILES_ACTIVE>
         <beanstalk.env.aws.elasticbeanstalk.application.environment.ORG_SCA_EVENTS_HOME>${maven.aws.elasticbeanstalk.application.environment.ORG_SCA_EVENTS_HOME}</beanstalk.env.aws.elasticbeanstalk.application.environment.ORG_SCA_EVENTS_HOME>
-        <beanstalk.env.aws.elasticbeanstalk.application.environment.TEST_NAME>${maven.test.env.test.name}</beanstalk.env.aws.elasticbeanstalk.application.environment.TEST_NAME>
-        <beanstalk.env.aws.elasticbeanstalk.application.environment.TEST_NAME_2>testname2</beanstalk.env.aws.elasticbeanstalk.application.environment.TEST_NAME_2>
 
         <beanstalk.env.aws.autoscaling.updatepolicy.rollingupdate.RollingUpdateType>Immutable</beanstalk.env.aws.autoscaling.updatepolicy.rollingupdate.RollingUpdateType>
         <beanstalk.env.aws.elasticbeanstalk.command.DeploymentPolicy>Immutable</beanstalk.env.aws.elasticbeanstalk.command.DeploymentPolicy>
@@ -33,12 +31,11 @@
         <beanstalk.vpcId>${maven.beanstalk.vpcId}</beanstalk.vpcId>
         <beanstalk.iamInstanceProfile>${maven.beanstalk.iamInstanceProfile}</beanstalk.iamInstanceProfile>
         <beanstalk.instanceType>${maven.beanstalk.instanceType}</beanstalk.instanceType>
-        <beanstalk.tag.scheduler-asg-desiredminmax>opt-out</beanstalk.tag.scheduler-asg-desiredminmax>
+        <beanstalk.tag.scheduler-asg-desiredminmax>${maven.beanstalk.tag.scheduler.scheduler-asg-desiredminmax.value}</beanstalk.tag.scheduler-asg-desiredminmax>
+        <beanstalk.tag.CreatedBy>${maven.beanstalk.tag.scheduler.CreatedBy.value}</beanstalk.tag.CreatedBy>
+
         <beanstalk.applicationHealthCheckURL>/actuator/health</beanstalk.applicationHealthCheckURL>
         <beanstalk.env.aws.ec2.vpc.Subnets>${maven.beanstalk.env.aws.ec2.vpc.Subnets}</beanstalk.env.aws.ec2.vpc.Subnets>
-        <!--       <beanstalk.env.aws.ec2.vpc.ELBSubnets>subnet-3fc6a858,subnet-677bfb2e,subnet-677bfb2e</beanstalk.env.aws.ec2.vpc.ELBSubnets>
-               <beanstalk.env.aws.ec2.vpc.ELBScheme>internal</beanstalk.env.aws.ec2.vpc.ELBScheme>
-               <beanstalk.env.aws.ec2.vpc.AssociatePublicIpAddress>false</beanstalk.env.aws.ec2.vpc.AssociatePublicIpAddress>-->
 
     </properties>
 
