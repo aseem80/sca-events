@@ -20,7 +20,6 @@
         <beanstalk.versionLabel>${maven.build.timestamp}</beanstalk.versionLabel>
         <beanstalk.env.aws.elasticbeanstalk.application.environment.SPRING_PROFILES_ACTIVE>${spring.profiles.active}</beanstalk.env.aws.elasticbeanstalk.application.environment.SPRING_PROFILES_ACTIVE>
         <beanstalk.env.aws.elasticbeanstalk.application.environment.ORG_SCA_EVENTS_HOME>${maven.aws.elasticbeanstalk.application.environment.ORG_SCA_EVENTS_HOME}</beanstalk.env.aws.elasticbeanstalk.application.environment.ORG_SCA_EVENTS_HOME>
-        <beanstalk.env.aws.elasticbeanstalk.application.environment.ELASTIC_HOST>${maven.filebeat.dest.host}</beanstalk.env.aws.elasticbeanstalk.application.environment.ELASTIC_HOST>
         <beanstalk.env.aws.elasticbeanstalk.application.environment.TEST_NAME>${maven.test.env.test.name}</beanstalk.env.aws.elasticbeanstalk.application.environment.TEST_NAME>
         <beanstalk.env.aws.autoscaling.updatepolicy.rollingupdate.RollingUpdateType>Immutable</beanstalk.env.aws.autoscaling.updatepolicy.rollingupdate.RollingUpdateType>
         <beanstalk.env.aws.elasticbeanstalk.command.DeploymentPolicy>Immutable</beanstalk.env.aws.elasticbeanstalk.command.DeploymentPolicy>
