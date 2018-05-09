@@ -305,6 +305,7 @@
                             <environmentName>non-prod</environmentName>
                             <environmentRef>non-prod</environmentRef>
                             <solutionStack>64bit Amazon Linux 2017.09 v2.6.8 running Java 8</solutionStack>
+                            <copyOptionSettings>false</copyOptionSettings>
                         </configuration>
                     </plugin>
 
