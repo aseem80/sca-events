@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration debug="true">
 
-    <springProfile name="default,dev,non-prod">
+    <springProfile name="default">
         <logger name="io" level="INFO" additivity="false">
             <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
                 <file>${ORG_SCA_EVENTS_HOME:-/var/tmp}/logs/sca-events/sca-events.log</file>
@@ -116,7 +116,7 @@
         </logger>
     </springProfile>
 
-    <springProfile name="prod">
+    <springProfile name="non-prod,prod">
         <logger name="io" level="INFO" additivity="false">
             <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
                 <file>${ORG_SCA_EVENTS_HOME:-/var/tmp}/logs/sca-events/sca-events.log</file>
