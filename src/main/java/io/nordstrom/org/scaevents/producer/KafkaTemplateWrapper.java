@@ -1,5 +1,7 @@
 package io.nordstrom.org.scaevents.producer;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import io.nordstrom.org.scaevents.dao.PayloadDao;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -33,6 +35,12 @@ public class KafkaTemplateWrapper {
 
     private static final String TRACE_ID_HEADER = "TraceID";
 
+
+    private final Counter producedMessagesCounter;
+
+    public KafkaTemplateWrapper(MeterRegistry registry) {
+        this.producedMessagesCounter = registry.counter("produced.messages");
+    }
 
     @Autowired
     private KafkaTemplate<String, byte[]> kafkaTemplate;
@@ -97,6 +105,7 @@ public class KafkaTemplateWrapper {
 
 
     private ListenableFuture<SendResult<String, byte[]>> sendAsync(final Message<byte[]> message) throws ExecutionException, InterruptedException {
+        producedMessagesCounter.increment();
         ListenableFuture<SendResult<String, byte[]>> future = kafkaTemplate.send(message);
         future.addCallback(new ListenableFutureCallback<SendResult<String, byte[]>>() {
 

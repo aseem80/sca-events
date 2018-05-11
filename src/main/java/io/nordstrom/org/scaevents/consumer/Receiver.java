@@ -1,5 +1,7 @@
 package io.nordstrom.org.scaevents.consumer;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import io.nordstrom.org.scaevents.producer.Sender;
 import io.nordstrom.org.scaevents.util.SCAProcessor;
 import org.apache.commons.lang3.tuple.Pair;
@@ -26,15 +28,23 @@ public class Receiver {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Receiver.class);
 
+
+    private final Counter receivedMessagesCounter;
+
     @Autowired
     private SCAProcessor scaProcessor;
     @Autowired
     private Sender sender;
 
+    public Receiver(MeterRegistry registry) {
+        this.receivedMessagesCounter = registry.counter("received.messages");
+    }
+
 
     @KafkaListener(id = "canonical-batch-listener", topics = "${spring.kafka.consumer.topic}")
     public void receive(final List<Message<String>> messages)  {
         LOGGER.info("Started processing batch of {} messages", messages.size());
+        this.receivedMessagesCounter.increment();
         messages.forEach(message -> {
             MessageHeaders headers = message.getHeaders();
             String receivedMessageKey = "";
