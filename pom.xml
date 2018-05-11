@@ -450,6 +450,16 @@
         </dependency>
 
 
+        <!-- https://mvnrepository.com/artifact/io.micrometer/micrometer-registry-datadog -->
+        <!--
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-datadog</artifactId>
+            <version>1.0.4</version>
+        </dependency>
+        -->
+
+
 
         <!--Testing -->
         <dependency>
