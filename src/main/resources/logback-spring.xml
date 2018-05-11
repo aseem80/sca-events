@@ -4,7 +4,7 @@
     <springProfile name="default">
         <logger name="io" level="INFO" additivity="false">
             <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-                <file>${ORG_SCA_EVENTS_HOME:-/var/tmp}/logs/sca-events/sca-events.log</file>
+                <file>${ORG_SCA_EVENTS_HOME:-/tmp}/log/sca-events.log</file>
                 <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
                     <!-- daily rollover. Make sure the path matches the one in the file element or else
                      the rollover logs are placed in the working directory. -->
@@ -18,21 +18,21 @@
                 </rollingPolicy>
                 <encoder>
                     <charset>UTF-8</charset>
-                    <pattern>%d %-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
+                    <pattern>[%d] [%-4relative] [%thread] [%-5level] %logger{35} - %msg%n</pattern>
                 </encoder>
             </appender>
             <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
                 <!-- encoders are assigned the type
                      ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
                 <encoder>
-                    <pattern>%-4relative [%thread] %-5level %logger{35} - %msg %n</pattern>
+                    <pattern>[%d] [%-4relative] [%thread] [%-5level] %logger{35} - %msg%n</pattern>
                 </encoder>
             </appender>
 
         </logger>
         <logger name="com" level="INFO" additivity="false">
             <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-                <file>${ORG_SCA_EVENTS_HOME:-/var/tmp}/logs/sca-events/sca-events.log</file>
+                <file>${ORG_SCA_EVENTS_HOME:-/tmp}/log/sca-events.log</file>
                 <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
                     <!-- daily rollover. Make sure the path matches the one in the file element or else
                      the rollover logs are placed in the working directory. -->
@@ -46,21 +46,21 @@
                 </rollingPolicy>
                 <encoder>
                     <charset>UTF-8</charset>
-                    <pattern>%d %-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
+                    <pattern>[%d] [%-4relative] [%thread] [%-5level] %logger{35} - %msg%n</pattern>
                 </encoder>
             </appender>
             <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
                 <!-- encoders are assigned the type
                      ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
                 <encoder>
-                    <pattern>%-4relative [%thread] %-5level %logger{35} - %msg %n</pattern>
+                    <pattern>[%d] [%-4relative] [%thread] [%-5level] %logger{35} - %msg%n</pattern>
                 </encoder>
             </appender>
 
         </logger>
         <logger name="org" level="INFO" additivity="false">
             <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-                <file>${ORG_SCA_EVENTS_HOME:-/var/tmp}/logs/sca-events/sca-events.log</file>
+                <file>${ORG_SCA_EVENTS_HOME:-/tmp}/log/sca-events.log</file>
                 <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
                     <!-- daily rollover. Make sure the path matches the one in the file element or else
                      the rollover logs are placed in the working directory. -->
@@ -74,21 +74,21 @@
                 </rollingPolicy>
                 <encoder>
                     <charset>UTF-8</charset>
-                    <pattern>%d %-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
+                    <pattern>[%d] [%-4relative] [%thread] [%-5level] %logger{35} - %msg%n</pattern>
                 </encoder>
             </appender>
             <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
                 <!-- encoders are assigned the type
                      ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
                 <encoder>
-                    <pattern>%-4relative [%thread] %-5level %logger{35} - %msg %n</pattern>
+                    <pattern>[%d] [%-4relative] [%thread] [%-5level] %logger{35} - %msg%n</pattern>
                 </encoder>
             </appender>
 
         </logger>
         <logger name="com" level="INFO" additivity="false">
             <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-                <file>${ORG_SCA_EVENTS_HOME:-/var/tmp}/logs/sca-events/sca-events.log</file>
+                <file>${ORG_SCA_EVENTS_HOME:-/tmp}/log/sca-events.log</file>
                 <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
                     <!-- daily rollover. Make sure the path matches the one in the file element or else
                      the rollover logs are placed in the working directory. -->
@@ -102,14 +102,14 @@
                 </rollingPolicy>
                 <encoder>
                     <charset>UTF-8</charset>
-                    <pattern>%d %-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
+                    <pattern>[%d] [%-4relative] [%thread] [%-5level] %logger{35} - %msg%n</pattern>
                 </encoder>
             </appender>
             <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
                 <!-- encoders are assigned the type
                      ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
                 <encoder>
-                    <pattern>%-4relative [%thread] %-5level %logger{35} - %msg %n</pattern>
+                    <pattern>[%d] [%-4relative] [%thread] [%-5level] %logger{35} - %msg%n</pattern>
                 </encoder>
             </appender>
 
@@ -119,7 +119,7 @@
     <springProfile name="non-prod,prod">
         <logger name="io" level="INFO" additivity="false">
             <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-                <file>${ORG_SCA_EVENTS_HOME:-/var/tmp}/logs/sca-events/sca-events.log</file>
+                <file>${ORG_SCA_EVENTS_HOME:-/var}/log/sca-events.log</file>
                 <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
                     <!-- daily rollover. Make sure the path matches the one in the file element or else
                      the rollover logs are placed in the working directory. -->
@@ -133,13 +133,13 @@
                 </rollingPolicy>
                 <encoder>
                     <charset>UTF-8</charset>
-                    <pattern>%d %-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
+                    <pattern>[%d] [%-4relative] [%thread] [%-5level] %logger{35} - %msg%n</pattern>
                 </encoder>
             </appender>
         </logger>
         <logger name="org" level="INFO" additivity="false">
             <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-                <file>${ORG_SCA_EVENTS_HOME:-/var/tmp}/logs/sca-events/sca-events.log</file>
+                <file>${ORG_SCA_EVENTS_HOME:-/var}/log/sca-events.log</file>
                 <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
                     <!-- daily rollover. Make sure the path matches the one in the file element or else
                      the rollover logs are placed in the working directory. -->
@@ -153,14 +153,14 @@
                 </rollingPolicy>
                 <encoder>
                     <charset>UTF-8</charset>
-                    <pattern>%d %-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
+                    <pattern>[%d] [%-4relative] [%thread] [%-5level] %logger{35} - %msg%n</pattern>
                 </encoder>
             </appender>
         </logger>
 
         <logger name="com" level="INFO" additivity="false">
             <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-                <file>${ORG_SCA_EVENTS_HOME:-/var/tmp}/logs/sca-events/sca-events.log</file>
+                <file>${ORG_SCA_EVENTS_HOME:-/var}/log/sca-events.log</file>
                 <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
                     <!-- daily rollover. Make sure the path matches the one in the file element or else
                      the rollover logs are placed in the working directory. -->
@@ -174,14 +174,14 @@
                 </rollingPolicy>
                 <encoder>
                     <charset>UTF-8</charset>
-                    <pattern>%d %-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
+                    <pattern>[%d] [%-4relative] [%thread] [%-5level] %logger{35} - %msg%n</pattern>
                 </encoder>
             </appender>
             <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
                 <!-- encoders are assigned the type
                      ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
                 <encoder>
-                    <pattern>%-4relative [%thread] %-5level %logger{35} - %msg %n</pattern>
+                    <pattern>[%d] [%-4relative] [%thread] [%-5level] %logger{35} - %msg%n</pattern>
                 </encoder>
             </appender>
 
