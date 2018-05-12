@@ -1,11 +1,14 @@
 package io.nordstrom.org.scaevents.consumer;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import io.nordstrom.org.scaevents.producer.Sender;
 import io.nordstrom.org.scaevents.util.SCAProcessor;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
@@ -15,6 +18,9 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static io.nordstrom.org.scaevents.util.PropertiesUtil.DATADOG_METRICS_PREFIX;
+import static io.nordstrom.org.scaevents.util.PropertiesUtil.DATADOG_METRICS_TAG_KEY;
 
 /**
  * Created by bmwi on 4/3/18.
@@ -26,15 +32,26 @@ public class Receiver {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Receiver.class);
 
+
+    private final Counter receivedMessagesCounter;
+
     @Autowired
     private SCAProcessor scaProcessor;
     @Autowired
     private Sender sender;
 
 
+
+    @Autowired
+    public Receiver (MeterRegistry registry, @Value("${spring.profiles.active}") String metricsTag) {
+        this.receivedMessagesCounter = registry.counter(DATADOG_METRICS_PREFIX+"received.requests", DATADOG_METRICS_TAG_KEY, metricsTag);
+    }
+
+
     @KafkaListener(id = "canonical-batch-listener", topics = "${spring.kafka.consumer.topic}")
     public void receive(final List<Message<String>> messages)  {
         LOGGER.info("Started processing batch of {} messages", messages.size());
+        this.receivedMessagesCounter.increment();
         messages.forEach(message -> {
             MessageHeaders headers = message.getHeaders();
             String receivedMessageKey = "";

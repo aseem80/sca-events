@@ -1,5 +1,7 @@
 package io.nordstrom.org.scaevents.producer;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import io.nordstrom.org.scaevents.dao.PayloadDao;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -21,6 +23,9 @@ import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import static io.nordstrom.org.scaevents.util.PropertiesUtil.DATADOG_METRICS_PREFIX;
+import static io.nordstrom.org.scaevents.util.PropertiesUtil.DATADOG_METRICS_TAG_KEY;
+
 /**
  * Created by bmwi on 4/11/18.
  */
@@ -33,6 +38,13 @@ public class KafkaTemplateWrapper {
 
     private static final String TRACE_ID_HEADER = "TraceID";
 
+
+    private final Counter producedMessagesCounter;
+
+    @Autowired
+    public KafkaTemplateWrapper (MeterRegistry registry, @Value("${spring.profiles.active}") String metricsTag) {
+        this.producedMessagesCounter = registry.counter(DATADOG_METRICS_PREFIX+"received.requests", DATADOG_METRICS_TAG_KEY, metricsTag);
+    }
 
     @Autowired
     private KafkaTemplate<String, byte[]> kafkaTemplate;
@@ -97,6 +109,7 @@ public class KafkaTemplateWrapper {
 
 
     private ListenableFuture<SendResult<String, byte[]>> sendAsync(final Message<byte[]> message) throws ExecutionException, InterruptedException {
+        producedMessagesCounter.increment();
         ListenableFuture<SendResult<String, byte[]>> future = kafkaTemplate.send(message);
         future.addCallback(new ListenableFutureCallback<SendResult<String, byte[]>>() {
 

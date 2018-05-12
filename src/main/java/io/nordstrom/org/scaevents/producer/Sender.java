@@ -1,11 +1,12 @@
 package io.nordstrom.org.scaevents.producer;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import io.nordstrom.org.scaevents.dao.PayloadDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Component;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -30,6 +31,8 @@ public class Sender {
 
 
 
+
+
     @Value("${spring.kafka.producer.topic}")
     private String topic;
 
@@ -38,6 +41,7 @@ public class Sender {
 
     @Autowired
     private KafkaTemplateWrapper wrapper;
+
 
     public void sendAsync(String payload, String key, Map<String, String> headers) {
         String uuid = UUID.randomUUID().toString();
