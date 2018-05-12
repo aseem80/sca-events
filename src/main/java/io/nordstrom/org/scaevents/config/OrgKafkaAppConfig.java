@@ -7,10 +7,13 @@ import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import io.micrometer.datadog.DatadogMeterRegistry;
+import io.micrometer.datadog.DatadogNamingConvention;
 import io.nordstrom.org.scaevents.exception.SimpleAsyncExceptionHandler;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.actuate.autoconfigure.metrics.MeterRegistryCustomizer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -31,7 +34,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 @EnableRetry
 @EnableAsync
 @ComponentScan("io.nordstrom.org.scaevents")
-public class OrgKafkaAppConfig implements AsyncConfigurer{
+public class OrgKafkaAppConfig implements AsyncConfigurer {
 
     @Autowired
     private ApplicationContext appContext;
@@ -48,10 +51,9 @@ public class OrgKafkaAppConfig implements AsyncConfigurer{
     private String awsProfile;
 
 
-
     @Bean
     public AWSCredentialsProviderChain awsCredentialsProviderChain() {
-        if(awsInfraMode) {
+        if (awsInfraMode) {
             return DefaultAWSCredentialsProviderChain.getInstance();
         } else {
             return new AWSCredentialsProviderChain(new ProfileCredentialsProvider(awsProfile));
@@ -80,4 +82,6 @@ public class OrgKafkaAppConfig implements AsyncConfigurer{
     public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
         return new SimpleAsyncExceptionHandler(appContext);
     }
+
+
 }

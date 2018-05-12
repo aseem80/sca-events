@@ -8,6 +8,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
@@ -17,6 +18,9 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static io.nordstrom.org.scaevents.util.PropertiesUtil.DATADOG_METRICS_PREFIX;
+import static io.nordstrom.org.scaevents.util.PropertiesUtil.DATADOG_METRICS_TAG_KEY;
 
 /**
  * Created by bmwi on 4/3/18.
@@ -36,8 +40,11 @@ public class Receiver {
     @Autowired
     private Sender sender;
 
-    public Receiver(MeterRegistry registry) {
-        this.receivedMessagesCounter = registry.counter("received.messages");
+
+
+    @Autowired
+    public Receiver (MeterRegistry registry, @Value("${spring.profiles.active}") String metricsTag) {
+        this.receivedMessagesCounter = registry.counter(DATADOG_METRICS_PREFIX+"received.requests", DATADOG_METRICS_TAG_KEY, metricsTag);
     }
 
 

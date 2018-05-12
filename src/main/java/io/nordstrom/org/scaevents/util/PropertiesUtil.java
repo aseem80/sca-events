@@ -17,4 +17,8 @@ public class PropertiesUtil {
 
     public static final String AUTO_OFFSET_RESET_CONFIG_VALUE = "latest";
 
+
+    public static final String DATADOG_METRICS_TAG_KEY="environment";
+    public static final String DATADOG_METRICS_PREFIX = "dsorg.streamprocessor.";
+
 }
