@@ -19,7 +19,6 @@ import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
 import java.time.Instant;
-import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -39,12 +38,9 @@ public class KafkaTemplateWrapper {
     private static final String TRACE_ID_HEADER = "TraceID";
 
 
-    private final Counter producedMessagesCounter;
-
-    @Autowired
-    public KafkaTemplateWrapper (MeterRegistry registry, @Value("${spring.profiles.active}") String metricsTag) {
-        this.producedMessagesCounter = registry.counter(DATADOG_METRICS_PREFIX+"received.requests", DATADOG_METRICS_TAG_KEY, metricsTag);
-    }
+    private final Counter totalMessagesCounter;
+    private final Counter successMessagesCounter;
+    private final Counter failedMessagesCounter;
 
     @Autowired
     private KafkaTemplate<String, byte[]> kafkaTemplate;
@@ -61,10 +57,18 @@ public class KafkaTemplateWrapper {
     @Value("${scaevents.producer.retry.delay.ms:500}")
     private Integer retryDelayInMillis;
 
+    @Autowired
+    public KafkaTemplateWrapper (MeterRegistry registry, @Value("${spring.profiles.active}") String metricsTag) {
+        this.totalMessagesCounter = registry.counter(DATADOG_METRICS_PREFIX+"total.produced.messages", DATADOG_METRICS_TAG_KEY, metricsTag);
+        this.successMessagesCounter = registry.counter(DATADOG_METRICS_PREFIX+"success.produced.messages", DATADOG_METRICS_TAG_KEY, metricsTag);
+        this.failedMessagesCounter = registry.counter(DATADOG_METRICS_PREFIX+"failed.produced.messages", DATADOG_METRICS_TAG_KEY, metricsTag);
+    }
+
 
 
     //Use it in high performance and non-transactional scenario
     public void sendAsync(String topic, String uuid, String payload, String key, Map<String,String> headers) {
+        totalMessagesCounter.increment();
         Message<byte[]> message = buildMessage(topic, uuid, payload, key,headers);
         try {
             sendAsync(message);
@@ -74,17 +78,29 @@ public class KafkaTemplateWrapper {
     }
 
 
-    public SendResult<String, byte[]> send(String topic, String uuid, String payload, String key, Map<String,String> headers) throws Throwable{
-        return send(buildMessage(topic, uuid, payload, key,headers));
+    public SendResult<String, byte[]> send(String topic, String uuid, String payload, String key, Map<String,String> headers) {
+        totalMessagesCounter.increment();
+        SendResult<String, byte[]> result = null;
+        try {
+            result = send(buildMessage(topic, uuid, payload, key, headers));
+            successMessagesCounter.increment();
+            return result;
+        } catch(Throwable t) {
+            failedMessagesCounter.increment();
+        }
+        return result;
     }
 
 
     private SendResult<String, byte[]> send(final Message<byte[]> message) throws Throwable {
         SendResult<String, byte[]> result = null;
         try {
+            MessageHeaders headers = message.getHeaders();
+            String key = (String) headers.get(KafkaHeaders.MESSAGE_KEY);
+            String uuid = (String) headers.get(TRACE_ID_HEADER);
             result = kafkaTemplate.send(message).get();
-            LOGGER.info("Successfully published payload ");
-        }catch (ExecutionException ex) {
+            LOGGER.info("Successfully published payload for key:{}, TraceId:{} ", key, uuid);
+        }catch (Throwable ex) {
             //Retry can still be succesful. Throw Exception after final retry
             result = retryOnFailure(message, ex);
         }
@@ -109,15 +125,14 @@ public class KafkaTemplateWrapper {
 
 
     private ListenableFuture<SendResult<String, byte[]>> sendAsync(final Message<byte[]> message) throws ExecutionException, InterruptedException {
-        producedMessagesCounter.increment();
         ListenableFuture<SendResult<String, byte[]>> future = kafkaTemplate.send(message);
         future.addCallback(new ListenableFutureCallback<SendResult<String, byte[]>>() {
-
             @Override
             public void onSuccess(SendResult<String, byte[]> result) {
                 MessageHeaders headers = message.getHeaders();
                 String key = (String) headers.get(KafkaHeaders.MESSAGE_KEY);
                 String uuid = (String) headers.get(TRACE_ID_HEADER);
+                successMessagesCounter.increment();
                 LOGGER.info("Successfully published payload for key:{}, TraceId:{} ", key, uuid);
             }
 
@@ -130,6 +145,7 @@ public class KafkaTemplateWrapper {
                     String key = (String) headers.get(KafkaHeaders.MESSAGE_KEY);
                     String uuid = (String) headers.get(TRACE_ID_HEADER);
                     payloadDao.saveError(uuid, key, message.getPayload());
+                    failedMessagesCounter.increment();
                 }
             }
 

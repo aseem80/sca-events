@@ -29,10 +29,6 @@ public class Sender {
     }
 
 
-
-
-
-
     @Value("${spring.kafka.producer.topic}")
     private String topic;
 
@@ -41,6 +37,7 @@ public class Sender {
 
     @Autowired
     private KafkaTemplateWrapper wrapper;
+
 
 
     public void sendAsync(String payload, String key, Map<String, String> headers) {
@@ -58,7 +55,7 @@ public class Sender {
     public void send(String payload, String key, Map<String, String> headers) throws Throwable {
         String uuid = UUID.randomUUID().toString();
         if(null!=payload) {
-            LOGGER.info("sending message='{}' TraceID='{}' to topic='{}'", uuid, topic);
+            LOGGER.info("sending message with TraceID='{}' to topic='{}'", uuid, topic);
             payloadDao.saveAsync(uuid, key, payload);
             headers.putAll(MESSAGE_HEADERS);
             wrapper.send(topic, uuid, payload, key, headers);
