@@ -1,23 +1,37 @@
 package io.nordstrom.org.scaevents.unit;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import io.nordstrom.org.scaevents.util.SCAProcessor;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import static io.nordstrom.org.scaevents.util.PropertiesUtil.DATADOG_METRICS_PREFIX;
+import static io.nordstrom.org.scaevents.util.PropertiesUtil.DATADOG_METRICS_TAG_KEY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by bmwi on 4/3/18.
@@ -27,8 +41,34 @@ import static org.junit.Assert.assertTrue;
 @SpringBootTest
 public class SCAProcessorTest {
 
+
+    @Value("${spring.profiles.active}")
+    private String metricsTag;
+
+    @MockBean
+    private MeterRegistry meterRegistry;
     @Autowired
     private SCAProcessor scaProcessor;
+    @MockBean
+    private Counter counter;
+
+
+
+    @Before
+    public void setupMock() {
+        MockitoAnnotations.initMocks(this);
+        when(meterRegistry.counter(DATADOG_METRICS_PREFIX + "total.processed.cannonical.messages", DATADOG_METRICS_TAG_KEY, metricsTag))
+                .thenReturn(counter);
+        when(meterRegistry.counter(DATADOG_METRICS_PREFIX + "success.converted.sca.messages", DATADOG_METRICS_TAG_KEY, metricsTag))
+                .thenReturn(counter);
+        when(meterRegistry.counter(DATADOG_METRICS_PREFIX + "failed.converted.sca.messages", DATADOG_METRICS_TAG_KEY, metricsTag))
+                .thenReturn(counter);
+        when(meterRegistry.counter(DATADOG_METRICS_PREFIX + "empty.sca.messages", DATADOG_METRICS_TAG_KEY, metricsTag))
+                .thenReturn(counter);
+    }
+
+
+
 
 
     @Test

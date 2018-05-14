@@ -34,6 +34,8 @@ public class Receiver {
 
 
     private final Counter receivedMessagesCounter;
+    private final Counter scaProducerEligibleMessages;
+
 
     @Autowired
     private SCAProcessor scaProcessor;
@@ -44,14 +46,16 @@ public class Receiver {
 
     @Autowired
     public Receiver (MeterRegistry registry, @Value("${spring.profiles.active}") String metricsTag) {
-        this.receivedMessagesCounter = registry.counter(DATADOG_METRICS_PREFIX+"received.requests", DATADOG_METRICS_TAG_KEY, metricsTag);
+        this.receivedMessagesCounter = registry.counter(DATADOG_METRICS_PREFIX+"total.received.cannonical.messages", DATADOG_METRICS_TAG_KEY, metricsTag);
+        this.scaProducerEligibleMessages = registry.counter(DATADOG_METRICS_PREFIX+"total.sca.producer.messages", DATADOG_METRICS_TAG_KEY, metricsTag);
     }
 
 
     @KafkaListener(id = "canonical-batch-listener", topics = "${spring.kafka.consumer.topic}")
     public void receive(final List<Message<String>> messages)  {
-        LOGGER.info("Started processing batch of {} messages", messages.size());
-        this.receivedMessagesCounter.increment();
+        int size = messages.size();
+        LOGGER.info("Started processing batch of {} messages", size);
+        this.receivedMessagesCounter.increment(size);
         messages.forEach(message -> {
             MessageHeaders headers = message.getHeaders();
             String receivedMessageKey = "";
@@ -80,6 +84,7 @@ public class Receiver {
         Pair<String, Boolean> pair = scaProcessor.isSCANodeChanged(map);
         LOGGER.info("SCA changed for store {} : {}", pair.getLeft(), pair.getRight());
         if (pair.getRight() != null && pair.getRight()) {
+            scaProducerEligibleMessages.increment();
             Map<String, String> headersMap = new HashMap<>();
             String payloadToSend = scaProcessor.toSCAPayload(map, headersMap);
             sender.sendAsync(payloadToSend, pair.getLeft(), headersMap);

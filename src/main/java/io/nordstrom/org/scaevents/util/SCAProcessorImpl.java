@@ -5,6 +5,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import io.nordstrom.org.scaevents.exception.SCAProcessorException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -12,16 +14,16 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.*;
+
+import static io.nordstrom.org.scaevents.util.PropertiesUtil.DATADOG_METRICS_PREFIX;
+import static io.nordstrom.org.scaevents.util.PropertiesUtil.DATADOG_METRICS_TAG_KEY;
 
 /**
  * Created by bmwi on 4/3/18.
@@ -33,16 +35,34 @@ public class SCAProcessorImpl implements SCAProcessor {
     private static final Logger LOGGER = LoggerFactory.getLogger(SCAProcessorImpl.class);
 
 
+    private final Counter totalCannonicalMessagesCounter;
+    private final Counter sucessConversionScaPayloadMessagesCounter;
+    private final Counter failedConversionScaPayloadMessagesCounter;
+    private final Counter emptyScaPayloadMessagesCounter;
+    private final Counter emptyCurentDataMessagesCounter;
+
+
+    @Autowired
+    public SCAProcessorImpl(MeterRegistry registry, @Value("${spring.profiles.active}") String metricsTag) {
+        this.totalCannonicalMessagesCounter = registry.counter(DATADOG_METRICS_PREFIX + "total.processed.cannonical.messages", DATADOG_METRICS_TAG_KEY, metricsTag);
+        this.sucessConversionScaPayloadMessagesCounter = registry.counter(DATADOG_METRICS_PREFIX + "success.converted.sca.messages", DATADOG_METRICS_TAG_KEY, metricsTag);
+        this.failedConversionScaPayloadMessagesCounter = registry.counter(DATADOG_METRICS_PREFIX + "failed.converted.sca.messages", DATADOG_METRICS_TAG_KEY, metricsTag);
+        this.emptyScaPayloadMessagesCounter = registry.counter(DATADOG_METRICS_PREFIX + "empty.sca.node.messages", DATADOG_METRICS_TAG_KEY, metricsTag);
+        this.emptyCurentDataMessagesCounter = registry.counter(DATADOG_METRICS_PREFIX + "empty.currentdata.node.messages", DATADOG_METRICS_TAG_KEY, metricsTag);
+    }
 
     @Autowired
     private ObjectMapper mapper;
 
 
     @Override
-    @Retryable(value = { IOException.class },
+    @Retryable(value = {IOException.class},
             maxAttempts = 5,
             backoff = @Backoff(delay = 1000, multiplier = 2))
     public Map<String, Object> fromCanonicalPayload(String key, String payload) {
+        if (totalCannonicalMessagesCounter != null) {
+            totalCannonicalMessagesCounter.increment();
+        }
         Map<String, Object> map = new HashMap<>();
         try {
             // convert JSON string to Map
@@ -50,14 +70,23 @@ public class SCAProcessorImpl implements SCAProcessor {
             });
         } catch (JsonParseException e) {
             //Log and Swallow as there is nothing that can be done on this message
-            LOGGER.error("Invalid Json Payload received for key='{}'. StackTrace='{}' ", key , ExceptionUtils.getStackTrace(e));
+            LOGGER.error("Invalid Json Payload received for key='{}'. StackTrace='{}' ", key, ExceptionUtils.getStackTrace(e));
+            if (null != failedConversionScaPayloadMessagesCounter) {
+                failedConversionScaPayloadMessagesCounter.increment();
+            }
         } catch (JsonMappingException e) {
             //Log and Swallow as there is nothing that can be done on this message
-            LOGGER.error("Unexpected Format for Json for key='{}'. StackTrace='{}' ", key , ExceptionUtils.getStackTrace(e));
+            LOGGER.error("Unexpected Format for Json for key='{}'. StackTrace='{}' ", key, ExceptionUtils.getStackTrace(e));
+            if (null != failedConversionScaPayloadMessagesCounter) {
+                failedConversionScaPayloadMessagesCounter.increment();
+            }
         } catch (IOException e) {
-            LOGGER.error("IOException while parsing Json for key='{}'. StackTrace='{}' ", key , ExceptionUtils.getStackTrace(e));
+            LOGGER.error("IOException while parsing Json for key='{}'. StackTrace='{}' ", key, ExceptionUtils.getStackTrace(e));
             SCAProcessorException scaException = new SCAProcessorException("IOException");
             scaException.addSuppressed(e);
+            if (null != failedConversionScaPayloadMessagesCounter) {
+                failedConversionScaPayloadMessagesCounter.increment();
+            }
             throw scaException;
         }
         return map;
@@ -69,7 +98,7 @@ public class SCAProcessorImpl implements SCAProcessor {
         String storeNumber = (String) nodes.get(STORE_NUMBER);
 
         if (!nodes.containsKey(ROOT_LEVEL_CHANGED_NODES)) {
-            return Pair.of(storeNumber,false);
+            return Pair.of(storeNumber, false);
         }
         Object changedNodes = nodes.get(ROOT_LEVEL_CHANGED_NODES);
         if (changedNodes instanceof Collection) {
@@ -78,19 +107,19 @@ public class SCAProcessorImpl implements SCAProcessor {
                 if (change instanceof Map) {
                     Map changeMap = (Map) change;
                     if (changeMap.containsValue(SCA)) {
-                        LOGGER.info("sca node Changed for storeNumber {}" , storeNumber);
-                        return Pair.of(storeNumber,true);
+                        LOGGER.info("sca node Changed for storeNumber {}", storeNumber);
+                        return Pair.of(storeNumber, true);
                     }
                 }
             }
 
         }
-        return Pair.of(storeNumber,false);
+        return Pair.of(storeNumber, false);
 
     }
 
     @Override
-    @Retryable(value = { IOException.class },
+    @Retryable(value = {IOException.class},
             maxAttempts = 5,
             backoff = @Backoff(delay = 1000, multiplier = 2))
     public String toSCAPayload(Map<String, Object> nodes, Map<String, String> headers) {
@@ -100,7 +129,7 @@ public class SCAProcessorImpl implements SCAProcessor {
         if (currentData instanceof Map) {
             Map currentDataMap = (Map) currentData;
             if (!currentDataMap.isEmpty()) {
-                String storeNumberForCurrentData = (String)currentDataMap.get(STORE_NUMBER);
+                String storeNumberForCurrentData = (String) currentDataMap.get(STORE_NUMBER);
                 if (!StringUtils.isBlank(storeNumberForCurrentData)) {
                     payload.put(STORE_NUMBER, storeNumberForCurrentData);
                 } else {
@@ -111,24 +140,38 @@ public class SCAProcessorImpl implements SCAProcessor {
                     headers.put(SCA_TIMESTAMP_KAFKA_HEADER, timeStamp);
                     LOGGER.info("store={} , currentDataUpdatedTimeStampMS={}", storeNumber, timeStamp);
                 } else {
-                    String now =scaSimpleDateFormat.format( new Date());
+                    String now = scaSimpleDateFormat.format(new Date());
                     headers.put(SCA_TIMESTAMP_KAFKA_HEADER, now);
                     LOGGER.info("Empty {} node for store={}. Populating current time={}", TIMESTAMP, storeNumber, now);
                 }
                 Object scaCurrentData = currentDataMap.get(SCA);
                 //We don't send null keys as per API contract
-                if(scaCurrentData!=null) {
+                if (scaCurrentData != null) {
                     payload.put(SCA, scaCurrentData);
+                } else {
+                    if (null != emptyScaPayloadMessagesCounter) {
+                        emptyScaPayloadMessagesCounter.increment();
+                    }
                 }
             } else {
+                if(null!=emptyCurentDataMessagesCounter) {
+                    emptyCurentDataMessagesCounter.increment();
+                }
                 LOGGER.warn("Empty {} node", CURRENT_DATA);
             }
         }
         try {
-            return mapper.writeValueAsString(payload);
+            String result = mapper.writeValueAsString(payload);
+            if (null != sucessConversionScaPayloadMessagesCounter) {
+                sucessConversionScaPayloadMessagesCounter.increment();
+            }
+            return result;
         } catch (JsonProcessingException e) {
             SCAProcessorException scaException = new SCAProcessorException("JsonProcessingException");
             scaException.addSuppressed(e);
+            if (null != failedConversionScaPayloadMessagesCounter) {
+                failedConversionScaPayloadMessagesCounter.increment();
+            }
             throw scaException;
         }
 
