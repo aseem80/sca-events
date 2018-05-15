@@ -61,6 +61,8 @@ public class ReceiverConfig {
     private String sslKeyPassword;
     @Value("${spring.kafka.consumer.ssl.keystore.type:JKS}")
     private String sslKeystoreType;
+    @Value("${scaevents.consumer.auto.offset.reset:latest}")
+    private String autoReset;
 
 
 
@@ -73,7 +75,7 @@ public class ReceiverConfig {
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         // allows a pool of processes to divide the work of consuming and processing records
         props.put(ConsumerConfig.GROUP_ID_CONFIG, consumerGroupId);
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, PropertiesUtil.AUTO_OFFSET_RESET_CONFIG_VALUE);
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, autoReset);
         if(isSSLEnabled || StringUtils.contains(bootstrapServers, PropertiesUtil.PROTON_URL_TEXT)) {
             setSSL(props);
         }

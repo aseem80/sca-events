@@ -15,7 +15,7 @@ public class PropertiesUtil {
     public static final String SSL_KEY_PASSWORD = "ssl.key.password";
     public static final String SSL_KEYSTORE_TYPE = "ssl.keystore.type";
 
-    public static final String AUTO_OFFSET_RESET_CONFIG_VALUE = "latest";
+
 
 
     public static final String DATADOG_METRICS_TAG_KEY="environment";

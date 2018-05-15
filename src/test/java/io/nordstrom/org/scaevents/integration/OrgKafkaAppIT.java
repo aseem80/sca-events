@@ -50,11 +50,9 @@ public class OrgKafkaAppIT {
         Thread.sleep(10000);
         Path path  = OrgKafkaAppTestUtil.tempTestFilePath();
         String scaPayloadExpected = FileUtils.readFileToString(new ClassPathResource("sca_payload.json").getFile(), StandardCharsets.UTF_8);
-        /*
         String scaPayloadActual = FileUtils.readFileToString(path.toFile(), StandardCharsets.UTF_8);
         assertEquals(scaPayloadExpected, scaPayloadActual);
         Files.delete(path);
-        */
 
     }
 

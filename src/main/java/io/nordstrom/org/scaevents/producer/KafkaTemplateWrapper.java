@@ -87,6 +87,7 @@ public class KafkaTemplateWrapper {
             return result;
         } catch(Throwable t) {
             failedMessagesCounter.increment();
+            payloadDao.saveError(uuid, key, payload);
         }
         return result;
     }
@@ -97,7 +98,7 @@ public class KafkaTemplateWrapper {
         try {
             MessageHeaders headers = message.getHeaders();
             String key = (String) headers.get(KafkaHeaders.MESSAGE_KEY);
-            String uuid = (String) headers.get(TRACE_ID_HEADER);
+            String uuid = new String((byte[]) headers.get(TRACE_ID_HEADER));
             result = kafkaTemplate.send(message).get();
             LOGGER.info("Successfully published payload for key:{}, TraceId:{} ", key, uuid);
         }catch (Throwable ex) {
@@ -131,7 +132,7 @@ public class KafkaTemplateWrapper {
             public void onSuccess(SendResult<String, byte[]> result) {
                 MessageHeaders headers = message.getHeaders();
                 String key = (String) headers.get(KafkaHeaders.MESSAGE_KEY);
-                String uuid = (String) headers.get(TRACE_ID_HEADER);
+                String uuid = new String((byte[]) headers.get(TRACE_ID_HEADER));
                 successMessagesCounter.increment();
                 LOGGER.info("Successfully published payload for key:{}, TraceId:{} ", key, uuid);
             }
@@ -143,7 +144,7 @@ public class KafkaTemplateWrapper {
                 } catch (Throwable t) {
                     MessageHeaders headers = message.getHeaders();
                     String key = (String) headers.get(KafkaHeaders.MESSAGE_KEY);
-                    String uuid = (String) headers.get(TRACE_ID_HEADER);
+                    String uuid = new String((byte[]) headers.get(TRACE_ID_HEADER));
                     payloadDao.saveError(uuid, key, message.getPayload());
                     failedMessagesCounter.increment();
                 }

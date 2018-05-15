@@ -45,7 +45,7 @@ public class CanaryReceiver {
             Path path  = OrgKafkaAppTestUtil.tempTestFilePath();
             assertEquals("1", key);
             assertTrue(!StringUtils.isBlank(new String(uuid)));
-            assertEquals("1.0", new String(schemaVersion));
+            assertEquals("1", new String(schemaVersion));
             assertEquals("event", new String(messageMode));
             assertEquals("org", new String(messageType));
             assertEquals("2018-05-03T17:05:31.363Z", new String(valueUpdatedTime));
