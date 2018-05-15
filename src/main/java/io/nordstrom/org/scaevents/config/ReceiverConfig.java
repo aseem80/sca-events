@@ -27,6 +27,7 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.BatchLoggingErrorHandler;
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
 
+import javax.annotation.PostConstruct;
 import java.util.*;
 
 
@@ -41,7 +42,7 @@ public class ReceiverConfig {
     private static final Logger LOGGER = LoggerFactory.getLogger(ReceiverConfig.class);
 
     @Autowired
-    private ApplicationContext appContext;
+    private MeterRegistry registry;
 
     @Value("${spring.kafka.consumer.bootstrap-servers}")
     private String bootstrapServers;

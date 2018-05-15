@@ -20,18 +20,3 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: 192.168.99.102:2181
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-  sca-events:
-      image: org/sca-events
-      network_mode: host
-      container_name: sca-events
-      depends_on:
-        - kafka
-        - zookeeper
-      ports:
-        - "5000:5000"
-      environment:
-        SPRING_KAFKA_PRODUCER_BOOTSTRAP-SERVERS: 192.168.99.102:9092
-        SPRING_KAFKA_CONSUMER_BOOTSTRAP-SERVERS: 192.168.99.102:9092
-        ORG_SCA_EVENTS_HOME: /tmp
-      volumes:
-        - /tmp/docker/sca-events:/tmp
