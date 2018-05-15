@@ -42,7 +42,7 @@ public class SCAProcessorImpl implements SCAProcessor {
 
 
     @Autowired
-    public SCAProcessorImpl(MeterRegistry registry, @Value("${spring.profiles.active}") String metricsTag) {
+    public SCAProcessorImpl(MeterRegistry registry) {
         this.totalCannonicalMessagesCounter = registry.counter("total.processed.cannonical.messages");
         this.sucessConversionScaPayloadMessagesCounter = registry.counter("success.converted.sca.messages");
         this.failedConversionScaPayloadMessagesCounter = registry.counter("failed.converted.sca.messages");

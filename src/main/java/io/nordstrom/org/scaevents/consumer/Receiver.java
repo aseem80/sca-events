@@ -42,11 +42,7 @@ public class Receiver {
     private Sender sender;
 
 
-
-
-
-    @Autowired
-    public Receiver (MeterRegistry registry, @Value("${spring.profiles.active}") String metricsTag) {
+    public Receiver (MeterRegistry registry) {
         this.receivedMessagesCounter = registry.counter("total.received.cannonical.messages");
         this.scaProducerEligibleMessages = registry.counter("total.sca.producer.messages");
     }

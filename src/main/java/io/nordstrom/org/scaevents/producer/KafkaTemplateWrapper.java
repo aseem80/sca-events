@@ -55,8 +55,8 @@ public class KafkaTemplateWrapper {
     @Value("${scaevents.producer.retry.delay.ms:500}")
     private Integer retryDelayInMillis;
 
-    @Autowired
-    public KafkaTemplateWrapper (MeterRegistry registry, @Value("${spring.profiles.active}") String metricsTag) {
+
+    public KafkaTemplateWrapper (MeterRegistry registry) {
         this.totalMessagesCounter = registry.counter("total.produced.messages");
         this.successMessagesCounter = registry.counter("success.produced.messages");
         this.failedMessagesCounter = registry.counter("failed.produced.messages");
