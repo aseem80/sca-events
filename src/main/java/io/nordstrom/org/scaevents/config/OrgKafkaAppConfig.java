@@ -2,14 +2,14 @@ package io.nordstrom.org.scaevents.config;
 
 import com.amazonaws.auth.AWSCredentialsProviderChain;
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
-import com.amazonaws.auth.InstanceProfileCredentialsProvider;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import io.micrometer.datadog.DatadogMeterRegistry;
+import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.datadog.DatadogNamingConvention;
 import io.nordstrom.org.scaevents.exception.SimpleAsyncExceptionHandler;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +25,8 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
+
+import static io.nordstrom.org.scaevents.util.PropertiesUtil.*;
 
 /**
  * Created by bmwi on 4/6/18.
@@ -49,6 +51,8 @@ public class OrgKafkaAppConfig implements AsyncConfigurer {
     private boolean awsInfraMode;
     @Value("${scaevents.aws.s3.profile}")
     private String awsProfile;
+    @Value("${spring.profiles.active}")
+    private String environmentMetricsTag;
 
 
     @Bean
@@ -82,6 +86,18 @@ public class OrgKafkaAppConfig implements AsyncConfigurer {
     public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
         return new SimpleAsyncExceptionHandler(appContext);
     }
+
+
+
+    @Bean
+    MeterRegistryCustomizer<MeterRegistry> metricsCommonTags() {
+        return registry -> {registry.config().commonTags(DATADOG_METRICS_TAG_KEY, environmentMetricsTag, DATADOG_METRICS_TEAM_TAG_KEY, DATADOG_METRICS_TEAM_NAME, DATADOG_METRICS_APPLICATION_NAME_TAG_KEY, DATADOG_METRICS_APPLICATION_NAME);
+            registry.config().namingConvention(new DatadogNamingConvention());
+        };
+    }
+
+
+
 
 
 }

@@ -2,24 +2,32 @@ package io.nordstrom.org.scaevents.config;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.micrometer.core.instrument.FunctionCounter;
+import io.micrometer.core.instrument.Meter;
+import io.micrometer.core.instrument.MeterRegistry;
 import io.nordstrom.org.scaevents.util.PropertiesUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.common.Metric;
+import org.apache.kafka.common.MetricName;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.config.KafkaListenerContainerFactory;
+import org.springframework.kafka.config.KafkaListenerEndpointRegistry;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.BatchLoggingErrorHandler;
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
-import java.util.HashMap;
-import java.util.Map;
+
+import java.util.*;
 
 
 /**
@@ -31,6 +39,9 @@ import java.util.Map;
 public class ReceiverConfig {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ReceiverConfig.class);
+
+    @Autowired
+    private ApplicationContext appContext;
 
     @Value("${spring.kafka.consumer.bootstrap-servers}")
     private String bootstrapServers;
@@ -64,6 +75,8 @@ public class ReceiverConfig {
     @Value("${scaevents.consumer.auto.offset.reset:latest}")
     private String autoReset;
 
+    @Autowired
+    private KafkaListenerEndpointRegistry kafkaRegistry;
 
 
     @Bean
@@ -104,6 +117,7 @@ public class ReceiverConfig {
         mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false).configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         return mapper;
     }
+
 
     private void setSSL(Map<String, Object> props) {
         props.put(PropertiesUtil.SECURITY_PROTOCOL, securityProtocol);

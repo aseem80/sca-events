@@ -9,9 +9,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,16 +18,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static io.nordstrom.org.scaevents.util.PropertiesUtil.DATADOG_METRICS_PREFIX;
 import static io.nordstrom.org.scaevents.util.PropertiesUtil.DATADOG_METRICS_TAG_KEY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 /**
@@ -57,13 +51,13 @@ public class SCAProcessorTest {
     @Before
     public void setupMock() {
         MockitoAnnotations.initMocks(this);
-        when(meterRegistry.counter(DATADOG_METRICS_PREFIX + "total.processed.cannonical.messages", DATADOG_METRICS_TAG_KEY, metricsTag))
+        when(meterRegistry.counter( "total.processed.cannonical.messages", DATADOG_METRICS_TAG_KEY, metricsTag))
                 .thenReturn(counter);
-        when(meterRegistry.counter(DATADOG_METRICS_PREFIX + "success.converted.sca.messages", DATADOG_METRICS_TAG_KEY, metricsTag))
+        when(meterRegistry.counter("success.converted.sca.messages", DATADOG_METRICS_TAG_KEY, metricsTag))
                 .thenReturn(counter);
-        when(meterRegistry.counter(DATADOG_METRICS_PREFIX + "failed.converted.sca.messages", DATADOG_METRICS_TAG_KEY, metricsTag))
+        when(meterRegistry.counter("failed.converted.sca.messages", DATADOG_METRICS_TAG_KEY, metricsTag))
                 .thenReturn(counter);
-        when(meterRegistry.counter(DATADOG_METRICS_PREFIX + "empty.sca.messages", DATADOG_METRICS_TAG_KEY, metricsTag))
+        when(meterRegistry.counter("empty.sca.messages", DATADOG_METRICS_TAG_KEY, metricsTag))
                 .thenReturn(counter);
     }
 

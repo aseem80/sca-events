@@ -22,8 +22,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.*;
 
-import static io.nordstrom.org.scaevents.util.PropertiesUtil.DATADOG_METRICS_PREFIX;
-import static io.nordstrom.org.scaevents.util.PropertiesUtil.DATADOG_METRICS_TAG_KEY;
+
 
 /**
  * Created by bmwi on 4/3/18.
@@ -44,11 +43,11 @@ public class SCAProcessorImpl implements SCAProcessor {
 
     @Autowired
     public SCAProcessorImpl(MeterRegistry registry, @Value("${spring.profiles.active}") String metricsTag) {
-        this.totalCannonicalMessagesCounter = registry.counter(DATADOG_METRICS_PREFIX + "total.processed.cannonical.messages", DATADOG_METRICS_TAG_KEY, metricsTag);
-        this.sucessConversionScaPayloadMessagesCounter = registry.counter(DATADOG_METRICS_PREFIX + "success.converted.sca.messages", DATADOG_METRICS_TAG_KEY, metricsTag);
-        this.failedConversionScaPayloadMessagesCounter = registry.counter(DATADOG_METRICS_PREFIX + "failed.converted.sca.messages", DATADOG_METRICS_TAG_KEY, metricsTag);
-        this.emptyScaPayloadMessagesCounter = registry.counter(DATADOG_METRICS_PREFIX + "empty.sca.node.messages", DATADOG_METRICS_TAG_KEY, metricsTag);
-        this.emptyCurentDataMessagesCounter = registry.counter(DATADOG_METRICS_PREFIX + "empty.currentdata.node.messages", DATADOG_METRICS_TAG_KEY, metricsTag);
+        this.totalCannonicalMessagesCounter = registry.counter("total.processed.cannonical.messages");
+        this.sucessConversionScaPayloadMessagesCounter = registry.counter("success.converted.sca.messages");
+        this.failedConversionScaPayloadMessagesCounter = registry.counter("failed.converted.sca.messages");
+        this.emptyScaPayloadMessagesCounter = registry.counter( "empty.sca.node.messages");
+        this.emptyCurentDataMessagesCounter = registry.counter("empty.currentdata.node.messages");
     }
 
     @Autowired

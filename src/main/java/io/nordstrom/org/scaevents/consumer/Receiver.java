@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.config.KafkaListenerEndpointRegistry;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
@@ -19,8 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static io.nordstrom.org.scaevents.util.PropertiesUtil.DATADOG_METRICS_PREFIX;
-import static io.nordstrom.org.scaevents.util.PropertiesUtil.DATADOG_METRICS_TAG_KEY;
 
 /**
  * Created by bmwi on 4/3/18.
@@ -44,10 +43,12 @@ public class Receiver {
 
 
 
+
+
     @Autowired
     public Receiver (MeterRegistry registry, @Value("${spring.profiles.active}") String metricsTag) {
-        this.receivedMessagesCounter = registry.counter(DATADOG_METRICS_PREFIX+"total.received.cannonical.messages", DATADOG_METRICS_TAG_KEY, metricsTag);
-        this.scaProducerEligibleMessages = registry.counter(DATADOG_METRICS_PREFIX+"total.sca.producer.messages", DATADOG_METRICS_TAG_KEY, metricsTag);
+        this.receivedMessagesCounter = registry.counter("total.received.cannonical.messages");
+        this.scaProducerEligibleMessages = registry.counter("total.sca.producer.messages");
     }
 
 

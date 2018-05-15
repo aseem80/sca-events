@@ -22,8 +22,6 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-import static io.nordstrom.org.scaevents.util.PropertiesUtil.DATADOG_METRICS_PREFIX;
-import static io.nordstrom.org.scaevents.util.PropertiesUtil.DATADOG_METRICS_TAG_KEY;
 
 /**
  * Created by bmwi on 4/11/18.
@@ -59,9 +57,9 @@ public class KafkaTemplateWrapper {
 
     @Autowired
     public KafkaTemplateWrapper (MeterRegistry registry, @Value("${spring.profiles.active}") String metricsTag) {
-        this.totalMessagesCounter = registry.counter(DATADOG_METRICS_PREFIX+"total.produced.messages", DATADOG_METRICS_TAG_KEY, metricsTag);
-        this.successMessagesCounter = registry.counter(DATADOG_METRICS_PREFIX+"success.produced.messages", DATADOG_METRICS_TAG_KEY, metricsTag);
-        this.failedMessagesCounter = registry.counter(DATADOG_METRICS_PREFIX+"failed.produced.messages", DATADOG_METRICS_TAG_KEY, metricsTag);
+        this.totalMessagesCounter = registry.counter("total.produced.messages");
+        this.successMessagesCounter = registry.counter("success.produced.messages");
+        this.failedMessagesCounter = registry.counter("failed.produced.messages");
     }
 
 
