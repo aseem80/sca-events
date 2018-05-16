@@ -1,7 +1,9 @@
 package io.nordstrom.org.scaevents.consumer;
 
+import io.micrometer.core.annotation.Timed;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 import io.nordstrom.org.scaevents.producer.Sender;
 import io.nordstrom.org.scaevents.util.SCAProcessor;
 import org.apache.commons.lang3.tuple.Pair;
@@ -30,8 +32,6 @@ public class Receiver {
 
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Receiver.class);
-
-
     private final Counter receivedMessagesCounter;
     private final Counter scaProducerEligibleMessages;
 
@@ -72,11 +72,11 @@ public class Receiver {
                 receivedOffset = receivedOffsetHeaderValue.toString();
             }
             LOGGER.info("Received message key(store) : {}, partition : {}, offset : {}  ", receivedMessageKey, receivedPartitionId, receivedOffset);
-
             consume(receivedMessageKey, message.getPayload());});
     }
 
-    private void consume(String key, String payload) {
+    @Timed(value="time.taken.to.proceess.single.message", percentiles = {50.0d,75.0d, 90.0d, 95.0d,99.0d, 99.9d}, description = "This is time taken from when message is consumed and processed. It does not include time taken to produce message to SCA cluster.")
+    public void consume(String key, String payload) {
         Map<String, Object> map = scaProcessor.fromCanonicalPayload(key, payload);
         Pair<String, Boolean> pair = scaProcessor.isSCANodeChanged(map);
         LOGGER.info("SCA changed for store {} : {}", pair.getLeft(), pair.getRight());
