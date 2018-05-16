@@ -303,9 +303,9 @@
                             <regionName>us-west-2</regionName>
                             <artifactFile>${project.build.directory}/${project.build.finalName}.zip</artifactFile>
                             <s3Key>${project.artifactId}/${project.build.finalName}-${maven.build.timestamp}.zip</s3Key>
-                            <cnamePrefix>org-sca-event-stream-processor-non-prod</cnamePrefix>
-                            <environmentName>non-prod</environmentName>
-                            <environmentRef>non-prod</environmentRef>
+                            <cnamePrefix>${maven.beanstalk.cnameprefix}</cnamePrefix>
+                            <environmentName>${maven.beanstalk.environmentName}</environmentName>
+                            <environmentRef>${maven.beanstalk.environmentRef}</environmentRef>
                             <solutionStack>64bit Amazon Linux 2017.09 v2.6.8 running Java 8</solutionStack>
                             <copyOptionSettings>false</copyOptionSettings>
                         </configuration>
