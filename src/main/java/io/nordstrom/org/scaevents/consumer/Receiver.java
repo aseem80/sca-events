@@ -34,6 +34,7 @@ public class Receiver {
     private static final Logger LOGGER = LoggerFactory.getLogger(Receiver.class);
     private final Counter receivedMessagesCounter;
     private final Counter scaProducerEligibleMessages;
+    private final Timer scaStreamProcessorTimer;
 
 
     @Autowired
@@ -45,6 +46,7 @@ public class Receiver {
     public Receiver (MeterRegistry registry) {
         this.receivedMessagesCounter = registry.counter("total.received.cannonical.messages");
         this.scaProducerEligibleMessages = registry.counter("total.sca.producer.messages");
+        this.scaStreamProcessorTimer = registry.timer("time.taken.to.proceess.single.message");
     }
 
 
@@ -75,17 +77,18 @@ public class Receiver {
             consume(receivedMessageKey, message.getPayload());});
     }
 
-    @Timed(value="time.taken.to.proceess.single.message", percentiles = {50.0d,75.0d, 90.0d, 95.0d,99.0d, 99.9d}, description = "This is time taken from when message is consumed and processed. It does not include time taken to produce message to SCA cluster.")
-    public void consume(String key, String payload) {
-        Map<String, Object> map = scaProcessor.fromCanonicalPayload(key, payload);
-        Pair<String, Boolean> pair = scaProcessor.isSCANodeChanged(map);
-        LOGGER.info("SCA changed for store {} : {}", pair.getLeft(), pair.getRight());
-        if (pair.getRight() != null && pair.getRight()) {
-            scaProducerEligibleMessages.increment();
-            Map<String, String> headersMap = new HashMap<>();
-            String payloadToSend = scaProcessor.toSCAPayload(map, headersMap);
-            sender.sendAsync(payloadToSend, pair.getLeft(), headersMap);
-        }
+    private void consume(String key, String payload) {
+        scaStreamProcessorTimer.record(() -> {
+            Map<String, Object> map = scaProcessor.fromCanonicalPayload(key, payload);
+            Pair<String, Boolean> pair = scaProcessor.isSCANodeChanged(map);
+            LOGGER.info("SCA changed for store {} : {}", pair.getLeft(), pair.getRight());
+            if (pair.getRight() != null && pair.getRight()) {
+                scaProducerEligibleMessages.increment();
+                Map<String, String> headersMap = new HashMap<>();
+                String payloadToSend = scaProcessor.toSCAPayload(map, headersMap);
+                sender.sendAsync(payloadToSend, pair.getLeft(), headersMap);
+            }
+        });
 
 
     }
