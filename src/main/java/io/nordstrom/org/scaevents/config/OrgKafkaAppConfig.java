@@ -9,7 +9,6 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.datadog.DatadogNamingConvention;
 import io.nordstrom.org.scaevents.exception.SimpleAsyncExceptionHandler;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

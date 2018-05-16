@@ -2,10 +2,7 @@ package io.nordstrom.org.scaevents.util;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import java.util.Map;
 
 /**

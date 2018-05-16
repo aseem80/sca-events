@@ -1,7 +1,6 @@
 package io.nordstrom.org.scaevents.producer;
 
-import io.micrometer.core.instrument.Counter;
-import io.micrometer.core.instrument.MeterRegistry;
+
 import io.nordstrom.org.scaevents.dao.PayloadDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
