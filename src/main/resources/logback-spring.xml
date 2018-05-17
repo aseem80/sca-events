@@ -2,7 +2,7 @@
 <configuration debug="true">
 
     <springProfile name="default">
-        <logger name="io" level="DEBUG" additivity="false">
+        <logger name="io" level="INFO" additivity="false">
             <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
                 <file>${ORG_SCA_EVENTS_HOME:-/tmp}/log/sca-events.log</file>
                 <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -58,7 +58,7 @@
             </appender>
 
         </logger>
-        <logger name="org" level="DEBUG" additivity="false">
+        <logger name="org" level="INFO" additivity="false">
             <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
                 <file>${ORG_SCA_EVENTS_HOME:-/tmp}/log/sca-events.log</file>
                 <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -86,7 +86,7 @@
             </appender>
 
         </logger>
-        <logger name="com" level="DEBUG" additivity="false">
+        <logger name="com" level="INFO" additivity="false">
             <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
                 <file>${ORG_SCA_EVENTS_HOME:-/tmp}/log/sca-events.log</file>
                 <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
