@@ -2,6 +2,9 @@ package io.nordstrom.org.scaevents.unit;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
+import io.nordstrom.org.scaevents.consumer.Receiver;
+import io.nordstrom.org.scaevents.producer.KafkaTemplateWrapper;
+import io.nordstrom.org.scaevents.producer.Sender;
 import io.nordstrom.org.scaevents.util.SCAProcessor;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -14,14 +17,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
-import static io.nordstrom.org.scaevents.util.PropertiesUtil.DATADOG_METRICS_TAG_KEY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -31,7 +33,7 @@ import static org.mockito.Mockito.when;
  * Created by bmwi on 4/3/18.
  */
 
-@RunWith(SpringRunner.class)
+@RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 public class SCAProcessorTest {
 
@@ -45,19 +47,25 @@ public class SCAProcessorTest {
     private SCAProcessor scaProcessor;
     @MockBean
     private Counter counter;
+    @MockBean
+    private Receiver receiver;
+    @MockBean
+    private Sender sender;
+    @MockBean
+    private KafkaTemplateWrapper wrapper;
 
 
 
     @Before
     public void setupMock() {
         MockitoAnnotations.initMocks(this);
-        when(meterRegistry.counter( "total.processed.cannonical.messages", DATADOG_METRICS_TAG_KEY, metricsTag))
+        when(meterRegistry.counter( "total.processed.cannonical.messages"))
                 .thenReturn(counter);
-        when(meterRegistry.counter("success.converted.sca.messages", DATADOG_METRICS_TAG_KEY, metricsTag))
+        when(meterRegistry.counter("success.converted.sca.messages"))
                 .thenReturn(counter);
-        when(meterRegistry.counter("failed.converted.sca.messages", DATADOG_METRICS_TAG_KEY, metricsTag))
+        when(meterRegistry.counter("failed.converted.sca.messages"))
                 .thenReturn(counter);
-        when(meterRegistry.counter("empty.sca.messages", DATADOG_METRICS_TAG_KEY, metricsTag))
+        when(meterRegistry.counter("empty.sca.messages"))
                 .thenReturn(counter);
     }
 

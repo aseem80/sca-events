@@ -46,10 +46,10 @@ public class Receiver {
         this.receivedMessagesCounter = registry.counter("total.received.cannonical.messages");
         this.scaProducerEligibleMessages = registry.counter("total.sca.producer.messages");
         this.scaStreamProcessorTimer = Timer.builder("time.taken.to.proceess.single.message")
-                .publishPercentileHistogram()
-                .publishPercentiles(0.5, 0.75, 0.95, 0.99)
-                .sla(Duration.ofSeconds(10))
-                .register(registry);
+                    .publishPercentileHistogram()
+                    .publishPercentiles(0.5, 0.75, 0.95, 0.99)
+                    .sla(Duration.ofSeconds(10))
+                    .register(registry);
     }
 
 

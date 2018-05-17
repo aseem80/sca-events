@@ -3,6 +3,7 @@ package io.nordstrom.org.scaevents.config;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.instrument.MeterRegistry;
+import io.nordstrom.org.scaevents.consumer.Receiver;
 import io.nordstrom.org.scaevents.util.PropertiesUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -75,6 +76,7 @@ public class ReceiverConfig {
     private KafkaListenerEndpointRegistry kafkaRegistry;
 
 
+
     @Bean
     public Map<String, Object> consumerConfigs() {
         Map<String, Object> props = new HashMap<>();
@@ -96,6 +98,7 @@ public class ReceiverConfig {
     public ConsumerFactory<String, String> consumerFactory() {
         return new DefaultKafkaConsumerFactory<>(consumerConfigs());
     }
+
 
     @Bean
     public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, String>> kafkaListenerContainerFactory() {
