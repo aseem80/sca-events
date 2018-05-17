@@ -74,7 +74,49 @@ public class KafkaProducerMetrics implements MeterBinder {
                     Gauge.builder("sca.kafka.producer.outgoing.byte.rate", mBeanServer, s -> safeDouble(() -> s.getAttribute(name, "outgoing-byte-rate")))
                             .description("Kafka Producer OutgoingByteRate")
                             .tags(allTags)
+                            .register(registry);
+
+                    Gauge.builder("sca.kafka.producer.compression.rate.avg", mBeanServer, s -> safeDouble(() -> s.getAttribute(name, "compression-rate-avg")))
+                            .description("Kafka Producer Compression Rate Average")
+                            .tags(allTags)
+                            .register(registry);
+
+                    Gauge.builder("sca.kafka.producer.record.queue.time.avg", mBeanServer, s -> safeDouble(() -> s.getAttribute(name, "record-queue-time-avg")))
+                            .description("Kafka Producer Record Queue Time Average")
+                            .tags(allTags)
+                            .register(registry);
+
+
+                    Gauge.builder("sca.kafka.producer.record.queue.time.max", mBeanServer, s -> safeDouble(() -> s.getAttribute(name, "record-queue-time-max")))
+                            .description("Kafka Producer Record Queue Time Max")
+                            .tags(allTags)
+                            .register(registry);
+
+                    Gauge.builder("sca.kafka.producer.record.send.rate", mBeanServer, s -> safeDouble(() -> s.getAttribute(name, "record-send-rate")))
+                            .description("Kafka Producer Record Send rate")
+                            .tags(allTags)
+                            .register(registry);
+
+                    Gauge.builder("sca.kafka.producer.record.error.rate", mBeanServer, s -> safeDouble(() -> s.getAttribute(name, "record-error-rate")))
+                            .description("Kafka Producer Record Error rate")
+                            .tags(allTags)
+                            .register(registry);
+
+                    Gauge.builder("sca.kafka.producer.record.size.max", mBeanServer, s -> safeDouble(() -> s.getAttribute(name, "record-size-max")))
+                            .description("Kafka Producer Record Size Max")
+                            .tags(allTags)
                             .baseUnit("bytes")
+                            .register(registry);
+
+                    Gauge.builder("sca.kafka.producer.record.size.avg", mBeanServer, s -> safeDouble(() -> s.getAttribute(name, "record-size-avg")))
+                            .description("Kafka Producer Record Size Avg")
+                            .tags(allTags)
+                            .baseUnit("bytes")
+                            .register(registry);
+
+                    Gauge.builder("sca.kafka.producer.requests.in.flight", mBeanServer, s -> safeDouble(() -> s.getAttribute(name, "requests-in-flight")))
+                            .description("Kafka Producer Requests in Flight")
+                            .tags(allTags)
                             .register(registry);
 
 
