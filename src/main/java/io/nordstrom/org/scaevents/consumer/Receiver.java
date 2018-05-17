@@ -1,6 +1,6 @@
 package io.nordstrom.org.scaevents.consumer;
 
-import io.micrometer.core.annotation.Timed;
+
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
@@ -16,6 +16,7 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +45,11 @@ public class Receiver {
     public Receiver (MeterRegistry registry) {
         this.receivedMessagesCounter = registry.counter("total.received.cannonical.messages");
         this.scaProducerEligibleMessages = registry.counter("total.sca.producer.messages");
-        this.scaStreamProcessorTimer = registry.timer("time.taken.to.proceess.single.message");
+        this.scaStreamProcessorTimer = Timer.builder("time.taken.to.proceess.single.message")
+                .publishPercentileHistogram()
+                .publishPercentiles(0.5, 0.75, 0.95, 0.99)
+                .sla(Duration.ofSeconds(10))
+                .register(registry);
     }
 
 
@@ -72,7 +77,8 @@ public class Receiver {
                 receivedOffset = receivedOffsetHeaderValue.toString();
             }
             LOGGER.info("Received message key(store) : {}, partition : {}, offset : {}  ", receivedMessageKey, receivedPartitionId, receivedOffset);
-            consume(receivedMessageKey, message.getPayload());});
+            consume(receivedMessageKey, message.getPayload());
+        });
     }
 
     private void consume(String key, String payload) {

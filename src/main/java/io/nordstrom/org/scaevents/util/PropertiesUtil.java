@@ -18,7 +18,7 @@ public class PropertiesUtil {
 
 
 
-    public static final String DATADOG_METRICS_TAG_KEY="environment";
+    public static final String DATADOG_METRICS_TAG_KEY="org-environment";
     public static final String DATADOG_METRICS_APPLICATION_NAME_TAG_KEY = "applicationName";
     public static final String DATADOG_METRICS_TEAM_TAG_KEY = "teamName";
 

@@ -1,9 +1,6 @@
 package io.nordstrom.org.scaevents.producer;
 
-import io.micrometer.core.instrument.FunctionCounter;
-import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Tag;
-import io.micrometer.core.instrument.Tags;
+import io.micrometer.core.instrument.*;
 import io.micrometer.core.instrument.binder.MeterBinder;
 import io.micrometer.core.lang.NonNullApi;
 import io.micrometer.core.lang.NonNullFields;
@@ -63,40 +60,27 @@ public class KafkaProducerMetrics implements MeterBinder {
 
         registerMetricsEventually("type", "producer-metrics", (name, allTags) -> {
 
-                    FunctionCounter.builder("kafka.producer.request.latency.avg", mBeanServer,
-                            s -> safeDouble(() -> s.getAttribute(name, "request-latency-avg")))
+
+                    Gauge.builder("sca.kafka.producer.request.latency.avg", mBeanServer, s -> safeDouble(() -> s.getAttribute(name, "request-latency-avg")))
+                            .description("Kafka Producer Request Latency average")
                             .tags(allTags)
                             .register(registry);
 
-                    FunctionCounter.builder("kafka.producer.request.latency.max", mBeanServer,
-                            s -> safeDouble(() -> s.getAttribute(name, "request-latency-max")))
+                    Gauge.builder("sca.kafka.producer.request.latency.max", mBeanServer, s -> safeDouble(() -> s.getAttribute(name, "request-latency-max")))
+                            .description("Kafka Producer Request Latency max")
                             .tags(allTags)
                             .register(registry);
 
-                    FunctionCounter.builder("kafka.producer.outgoing.byte.rate", mBeanServer,
-                            s -> safeDouble(() -> s.getAttribute(name, "outgoing-byte-rate")))
+                    Gauge.builder("sca.kafka.producer.outgoing.byte.rate", mBeanServer, s -> safeDouble(() -> s.getAttribute(name, "outgoing-byte-rate")))
+                            .description("Kafka Producer OutgoingByteRate")
                             .tags(allTags)
                             .baseUnit("bytes")
                             .register(registry);
 
-                    FunctionCounter.builder("kafka.producer.connection.count", mBeanServer,
-                            s -> safeDouble(() -> s.getAttribute(name, "connection-count")))
-                            .tags(allTags)
-                            .register(registry);
 
-                    FunctionCounter.builder("kafka.producer.connection.creation.rate", mBeanServer,
-                            s -> safeDouble(() -> s.getAttribute(name, "connection-creation-rate")))
-                            .tags(allTags)
-                            .register(registry);
-
-                    FunctionCounter.builder("kafka.producer.connection.close.rate", mBeanServer,
-                            s -> safeDouble(() -> s.getAttribute(name, "connection-close-rate")))
-                            .tags(allTags)
-                            .register(registry);
                 }
         );
     }
-
 
 
     private void registerMetricsEventually(String key, String value, BiConsumer<ObjectName, Iterable<Tag>> perObject) {
@@ -137,6 +121,7 @@ public class KafkaProducerMetrics implements MeterBinder {
             return 0.0;
         }
     }
+
 
     private Iterable<Tag> nameTag(ObjectName name) {
         if (name.getKeyProperty("client-id") != null) {

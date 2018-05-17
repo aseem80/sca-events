@@ -1,15 +1,13 @@
 package io.nordstrom.org.scaevents.consumer;
 
-import io.micrometer.core.instrument.FunctionCounter;
-import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Tag;
-import io.micrometer.core.instrument.Tags;
+import io.micrometer.core.instrument.*;
 import io.micrometer.core.instrument.binder.MeterBinder;
 import io.micrometer.core.lang.NonNullApi;
 import io.micrometer.core.lang.NonNullFields;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Configuration;
+
 import javax.management.InstanceNotFoundException;
 import javax.management.MBeanServer;
 import javax.management.MBeanServerDelegate;
@@ -23,6 +21,7 @@ import java.lang.management.ManagementFactory;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiConsumer;
 
 import static java.util.Collections.emptyList;
@@ -31,7 +30,7 @@ import static java.util.Collections.emptyList;
 @NonNullFields
 @Configuration
 @ConditionalOnClass(org.apache.kafka.clients.consumer.KafkaConsumer.class)
-public class KafkaConsumerMetrics implements MeterBinder {
+public class ProtonConsumerMetrics implements MeterBinder {
 
     private final MBeanServer mBeanServer;
 
@@ -40,15 +39,15 @@ public class KafkaConsumerMetrics implements MeterBinder {
     @Value("${spring.kafka.consumer.topic}")
     private String topic;
 
-    public KafkaConsumerMetrics() {
+    public ProtonConsumerMetrics() {
         this(getMBeanServer(), emptyList());
     }
 
-    public KafkaConsumerMetrics(Iterable<Tag> tags) {
+    public ProtonConsumerMetrics(Iterable<Tag> tags) {
         this(getMBeanServer(), tags);
     }
 
-    public KafkaConsumerMetrics(MBeanServer mBeanServer, Iterable<Tag> tags) {
+    public ProtonConsumerMetrics(MBeanServer mBeanServer, Iterable<Tag> tags) {
         this.tags = tags;
         this.mBeanServer = mBeanServer;
     }
@@ -71,32 +70,31 @@ public class KafkaConsumerMetrics implements MeterBinder {
 
         registerMetricsEventually("type", "consumer-fetch-manager-metrics", (name, allTags) -> {
 
-                    FunctionCounter.builder("kafka.consumer.records.lag.max", mBeanServer,
-                            s -> safeDouble(() -> s.getAttribute(name, "records-lag-max")))
+
+                    Gauge.builder("proton.consumer.records.lag.max", mBeanServer, s -> safeDouble(() -> s.getAttribute(name, "records-lag-max")))
+                            .description("Kafka Consumer Records Lag max")
                             .tags(allTags)
                             .register(registry);
 
-                    FunctionCounter.builder("kafka.consumer.fetch.latency.avg", mBeanServer,
-                            s -> safeDouble(() -> s.getAttribute(name, "fetch-latency-avg")))
+                    Gauge.builder("proton.consumer.fetch.latency.avg", mBeanServer, s -> safeDouble(() -> s.getAttribute(name, "fetch-latency-avg")))
+                            .description("Kafka Consumer Fetch Latency avg")
                             .tags(allTags)
                             .register(registry);
 
-                    FunctionCounter.builder("kafka.consumer.bytes.consumed.rate", mBeanServer,
-                            s -> safeDouble(() -> s.getAttribute(name, "bytes-consumed-rate")))
+
+                    Gauge.builder("proton.consumer.bytes.consumed.rate", mBeanServer, s -> safeDouble(() -> s.getAttribute(name, "bytes-consumed-rate")))
+                            .description("Kafka Consumer bytes consumed rate")
                             .tags(allTags)
                             .baseUnit("bytes")
                             .register(registry);
 
-                    FunctionCounter.builder("kafka.consumer.fetch.size.max", mBeanServer,
-                            s -> safeDouble(() -> s.getAttribute(name, "fetch-size-max")))
+
+                    Gauge.builder("proton.consumer.records.consumed.rate", mBeanServer, s -> safeDouble(() -> s.getAttribute(name, "records-consumed-rate")))
+                            .description("Kafka ConsumerRecords Consumed Rate")
                             .tags(allTags)
                             .baseUnit("bytes")
                             .register(registry);
 
-                    FunctionCounter.builder("kafka.consumer.records.consumed.rate", mBeanServer,
-                            s -> safeDouble(() -> s.getAttribute(name, "records-consumed-rate")))
-                            .tags(allTags)
-                            .register(registry);
                 }
         );
     }
@@ -105,25 +103,28 @@ public class KafkaConsumerMetrics implements MeterBinder {
 
         registerMetricsEventually("type", "consumer-coordinator-metrics", (name, allTags) -> {
 
-                    FunctionCounter.builder("kafka.consumer.assigned.partitions", mBeanServer,
+                    FunctionCounter.builder("proton.consumer.assigned.partitions", mBeanServer,
                             s -> safeDouble(() -> s.getAttribute(name, "assigned-partitions")))
                             .tags(allTags)
                             .register(registry);
 
-                    FunctionCounter.builder("kafka.consumer.commit.latency.avg", mBeanServer,
-                            s -> safeDouble(() -> s.getAttribute(name, "commit-latency-avg")))
+                    Gauge.builder("proton.consumer.commit.latency.avg", mBeanServer, s -> safeDouble(() -> s.getAttribute(name, "commit-latency-avg")))
+                            .description("Kafka Consumer Commit Latency avg")
                             .tags(allTags)
                             .register(registry);
 
-                    FunctionCounter.builder("kafka.consumer.commit.latency.max", mBeanServer,
-                            s -> safeDouble(() -> s.getAttribute(name, "commit-latency-max")))
+                    Gauge.builder("proton.consumer.commit.latency.max", mBeanServer, s -> safeDouble(() -> s.getAttribute(name, "commit-latency-max")))
+                            .description("Kafka Consumer Commit Latency mx")
                             .tags(allTags)
                             .register(registry);
 
-                    FunctionCounter.builder("kafka.consumer.commit.rate", mBeanServer,
-                            s -> safeDouble(() -> s.getAttribute(name, "commit-rate")))
+
+                    Gauge.builder("proton.consumer.commit.rate", mBeanServer, s -> safeDouble(() -> s.getAttribute(name, "commit-rate")))
+                            .description("Kafka Consumer Commit Rate")
                             .tags(allTags)
                             .register(registry);
+
+
                 }
         );
     }
@@ -162,6 +163,16 @@ public class KafkaConsumerMetrics implements MeterBinder {
     private double safeDouble(Callable<Object> callable) {
         try {
             return Double.parseDouble(callable.call().toString());
+        } catch (Exception e) {
+            return 0.0;
+        }
+    }
+
+    private double safeDoubleForTimer(Callable<Object> callable, AtomicLong timesCalled) {
+        try {
+            Double value = Double.parseDouble(callable.call().toString());
+            timesCalled.incrementAndGet();
+            return value;
         } catch (Exception e) {
             return 0.0;
         }
