@@ -8,6 +8,7 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
@@ -65,6 +66,7 @@ public class SenderConfig {
     private String clientId;
 
     @Bean
+    @DependsOn("encryptablePropertyDetector")
     public Map<String, Object> producerConfigs() {
         Map<String, Object> props = new HashMap<>();
         // list of host:port pairs used for establishing the initial connections to the Kakfa cluster

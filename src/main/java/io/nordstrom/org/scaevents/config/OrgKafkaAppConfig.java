@@ -6,10 +6,12 @@ import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.ulisesbocchio.jasyptspringboot.EncryptablePropertyDetector;
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.datadog.DatadogNamingConvention;
 import io.nordstrom.org.scaevents.exception.SimpleAsyncExceptionHandler;
+import org.apache.commons.lang3.StringUtils;
 import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
 import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
@@ -98,22 +100,27 @@ public class OrgKafkaAppConfig implements AsyncConfigurer {
             registry.config().namingConvention(new DatadogNamingConvention());
         };
     }
-
-    @Bean("jasyptStringEncryptor")
-    public StringEncryptor stringEncryptor() {
-        PooledPBEStringEncryptor encryptor = new PooledPBEStringEncryptor();
-        SimpleStringPBEConfig config = new SimpleStringPBEConfig();
-        config.setPassword("orgencrytionpa$$word");
-        config.setAlgorithm("PBEWithMD5AndDES");
-        config.setKeyObtentionIterations("1000");
-        config.setPoolSize("1");
-        config.setProviderName("SunJCE");
-        config.setSaltGeneratorClassName("org.jasypt.salt.RandomSaltGenerator");
-        config.setStringOutputType("base64");
-        encryptor.setConfig(config);
-        return encryptor;
+    @Bean(name = "encryptablePropertyDetector")
+    public EncryptablePropertyDetector encryptablePropertyDetector() {
+        return new OrgKafkaEncryptablePropertyDetector();
     }
 
+    private static class OrgKafkaEncryptablePropertyDetector implements EncryptablePropertyDetector {
+        private static String ENC_PREFIX = "ENC(";
+
+        @Override
+        public boolean isEncrypted(String value) {
+            if (value != null) {
+                return value.startsWith(ENC_PREFIX);
+            }
+            return false;
+        }
+
+        @Override
+        public String unwrapEncryptedValue(String value) {
+            return StringUtils.substringAfter(value, ENC_PREFIX);
+        }
+    }
 
 
 
