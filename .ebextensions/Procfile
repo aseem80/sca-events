@@ -1,0 +1,1 @@
+web: java -jar application.jar -Xms512m -Djasypt.encryptor.password=orgencrytionpa$$word
