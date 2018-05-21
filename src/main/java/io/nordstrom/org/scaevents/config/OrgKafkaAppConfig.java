@@ -10,6 +10,9 @@ import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.datadog.DatadogNamingConvention;
 import io.nordstrom.org.scaevents.exception.SimpleAsyncExceptionHandler;
+import org.jasypt.encryption.StringEncryptor;
+import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
+import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -94,6 +97,21 @@ public class OrgKafkaAppConfig implements AsyncConfigurer {
         return registry -> {registry.config().commonTags(DATADOG_METRICS_TAG_KEY, environmentMetricsTag, DATADOG_METRICS_TEAM_TAG_KEY, DATADOG_METRICS_TEAM_NAME, DATADOG_METRICS_APPLICATION_NAME_TAG_KEY, DATADOG_METRICS_APPLICATION_NAME);
             registry.config().namingConvention(new DatadogNamingConvention());
         };
+    }
+
+    @Bean("jasyptStringEncryptor")
+    public StringEncryptor stringEncryptor() {
+        PooledPBEStringEncryptor encryptor = new PooledPBEStringEncryptor();
+        SimpleStringPBEConfig config = new SimpleStringPBEConfig();
+        config.setPassword("orgencrytionpa$$word");
+        config.setAlgorithm("PBEWithMD5AndDES");
+        config.setKeyObtentionIterations("1000");
+        config.setPoolSize("1");
+        config.setProviderName("SunJCE");
+        config.setSaltGeneratorClassName("org.jasypt.salt.RandomSaltGenerator");
+        config.setStringOutputType("base64");
+        encryptor.setConfig(config);
+        return encryptor;
     }
 
 
