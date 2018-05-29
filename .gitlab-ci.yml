@@ -15,12 +15,16 @@ build_non_prod:
   tags:
     - non-prod-001
   stage: build
+  only:
+    - master
   script:
     - mvn $MAVEN_CLI_OPTS clean install
 
 
 deploy_non_prod:
   stage: deploy
+  only:
+    - master
   tags:
     - non-prod-001
   script:
@@ -32,12 +36,16 @@ build_prod:
   tags:
     - prod-001
   stage: build
+  only:
+    - master
   script:
     - mvn $MAVEN_CLI_OPTS clean install
   when: manual
 
 deploy_prod:
   stage: deploy
+  only:
+    - master
   tags:
     - prod-001
   script:
