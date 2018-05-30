@@ -15,7 +15,6 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.stereotype.Component;
-
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
@@ -48,6 +47,7 @@ public class Receiver {
         this.scaStreamProcessorTimer = Timer.builder("time.taken.to.proceess.single.message")
                     .publishPercentileHistogram()
                     .publishPercentiles(0.5, 0.75, 0.95, 0.99)
+                    .publishPercentileHistogram(true)
                     .sla(Duration.ofSeconds(10))
                     .register(registry);
     }
@@ -93,7 +93,6 @@ public class Receiver {
                 sender.sendAsync(payloadToSend, pair.getLeft(), headersMap);
             }
         });
-
 
     }
 
