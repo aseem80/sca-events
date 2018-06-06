@@ -47,6 +47,9 @@ public class S3Dao implements PayloadDao {
     @Value("${scaevents.aws.s3.bucket}")
     private String bucketName;
 
+    @Value("${scaevents.aws.s3.expiration.days:31}")
+    private Integer expirationInDays;
+
 
     @Override
     public void save(String uuid, String payloadKey, Object payload) {
@@ -73,9 +76,13 @@ public class S3Dao implements PayloadDao {
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentType(CONTENT_TYPE);
         metadata.setContentEncoding(StandardCharsets.UTF_8.name());
-        metadata.setContentLength(bytes.length);
         ZonedDateTime utc = ZonedDateTime.now(ZoneOffset.UTC);
         Date date = Date.from(utc.toInstant());
+        metadata.setContentLength(bytes.length);
+        if(expirationInDays!=null && expirationInDays >=0) {
+            ZonedDateTime expiryTime = utc.plusDays(expirationInDays);
+            metadata.setExpirationTime(Date.from(expiryTime.toInstant()));
+        }
         String datePart = sdf.format(date);
         StringBuilder keyPrefix = new StringBuilder(isErrorEvent ? ERROR_KEY_PREFIX : ALL_KEY_PREFIX).append(datePart);
         String key = keyPrefix.append(PATH_SEPARATOR).append(uuid).append(KEY_SEPARATOR).append(payloadKey).append(KEY_SEPARATOR).append(date.getTime()).toString();
