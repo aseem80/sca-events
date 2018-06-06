@@ -79,13 +79,16 @@ public class S3Dao implements PayloadDao {
         ZonedDateTime utc = ZonedDateTime.now(ZoneOffset.UTC);
         Date date = Date.from(utc.toInstant());
         metadata.setContentLength(bytes.length);
-        if(expirationInDays!=null && expirationInDays >=0) {
-            ZonedDateTime expiryTime = utc.plusDays(expirationInDays);
-            metadata.setExpirationTime(Date.from(expiryTime.toInstant()));
-        }
+
         String datePart = sdf.format(date);
         StringBuilder keyPrefix = new StringBuilder(isErrorEvent ? ERROR_KEY_PREFIX : ALL_KEY_PREFIX).append(datePart);
         String key = keyPrefix.append(PATH_SEPARATOR).append(uuid).append(KEY_SEPARATOR).append(payloadKey).append(KEY_SEPARATOR).append(date.getTime()).toString();
+        if(expirationInDays!=null && expirationInDays >=0) {
+            ZonedDateTime expiryTime = utc.plusDays(expirationInDays);
+            Date expiryDate = Date.from(expiryTime.toInstant());
+            metadata.setExpirationTime(expiryDate);
+            LOGGER.info("Setting expiration date of {} for key : {} ", expiryDate, key );
+        }
         LOGGER.info("Saving payload to S3 with path : {} ", key );
         return s3Client.putObject(bucketName, key, new ByteArrayInputStream(bytes), metadata);
     }
