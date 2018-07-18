@@ -10,8 +10,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring.boot.version>2.0.0.RELEASE</spring.boot.version>
-        <spring-kafka.version>2.0.0.RELEASE</spring-kafka.version>
+        <spring.boot.version>2.0.3.RELEASE</spring.boot.version>
+        <spring-kafka.version>2.1.7.RELEASE</spring-kafka.version>
         <docker.image.prefix>org</docker.image.prefix>
         <avro.version>1.8.2</avro.version>
         <scmUser>place-holder</scmUser> <!-- Passed in via command line -->
@@ -128,6 +128,32 @@
                         <groupId>io.fabric8</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
                         <version>0.20.1</version>
+                        <configuration>
+                            <images>
+                                <image>
+                                    <name>${docker.image.prefix}/${project.artifactId}:${project.version}</name>
+                                    <build>
+                                        <from>frolvlad/alpine-oraclejdk8:slim</from>
+                                        <maintainer>aseem.kapoor@nordstrom.com</maintainer>
+                                        <tags>
+                                            <tag>latest</tag>
+                                            <tag>${project.version}</tag>
+                                        </tags>
+                                        <ports>
+                                            <port>5000</port>
+                                        </ports>
+                                        <entryPoint>
+                                            <!-- exec form for ENTRYPOINT -->
+                                            <exec>
+                                                <arg>java</arg>
+                                                <arg>-jar</arg>
+                                                <arg>/${project.build.finalName}.jar</arg>
+                                            </exec>
+                                        </entryPoint>
+                                    </build>
+                                </image>
+                            </images>
+                        </configuration>
                         <executions>
                             <execution>
                                 <id>build-image</id>
@@ -136,34 +162,9 @@
                                     <!-- "build" should be used to create the images with the
                                          artifact -->
                                     <goal>build</goal>
-                                    <goal>start</goal>
+                                    <goal>source</goal>
                                 </goals>
-                                <configuration>
-                                    <images>
-                                        <image>
-                                            <name>${docker.image.prefix}/${project.artifactId}:${project.version}</name>
-                                            <build>
-                                                <from>frolvlad/alpine-oraclejdk8:slim</from>
-                                                <maintainer>aseem.kapoor@nordstrom.com</maintainer>
-                                                <tags>
-                                                    <tag>latest</tag>
-                                                    <tag>${project.version}</tag>
-                                                </tags>
-                                                <ports>
-                                                    <port>5000</port>
-                                                </ports>
-                                                <entryPoint>
-                                                    <!-- exec form for ENTRYPOINT -->
-                                                    <exec>
-                                                        <arg>java</arg>
-                                                        <arg>-jar</arg>
-                                                        <arg>/${project.build.finalName}.jar</arg>
-                                                    </exec>
-                                                </entryPoint>
-                                            </build>
-                                        </image>
-                                    </images>
-                                </configuration>
+
                             </execution>
                             <execution>
                                 <id>prepare-it-environment</id>
@@ -190,7 +191,7 @@
                                             </run>
                                         </image>
                                         <image>
-                                            <name>wurstmeister/kafka:1.0.1</name>
+                                            <name>wurstmeister/kafka:1.1.0</name>
                                             <alias>kafka</alias>
                                             <run>
                                                 <dependsOn>
@@ -200,9 +201,9 @@
                                                     <port>9092:9092</port>
                                                 </ports>
                                                 <env>
-                                                    <KAFKA_ADVERTISED_HOST_NAME>192.168.99.102</KAFKA_ADVERTISED_HOST_NAME>
+                                                    <KAFKA_ADVERTISED_HOST_NAME>192.168.99.101</KAFKA_ADVERTISED_HOST_NAME>
                                                     <KAFKA_ADVERTISED_PORT>9092</KAFKA_ADVERTISED_PORT>
-                                                    <KAFKA_ZOOKEEPER_CONNECT>192.168.99.102:2181</KAFKA_ZOOKEEPER_CONNECT>
+                                                    <KAFKA_ZOOKEEPER_CONNECT>192.168.99.101:2181</KAFKA_ZOOKEEPER_CONNECT>
                                                 </env>
                                                 <wait>
                                                     <tcp>
@@ -225,8 +226,8 @@
                                                     <port>5000:5000</port>
                                                 </ports>
                                                 <env>
-                                                    <SPRING_KAFKA_PRODUCER_BOOTSTRAP-SERVERS>192.168.99.102:9092</SPRING_KAFKA_PRODUCER_BOOTSTRAP-SERVERS>
-                                                    <SPRING_KAFKA_CONSUMER_BOOTSTRAP-SERVERS>192.168.99.102:9092</SPRING_KAFKA_CONSUMER_BOOTSTRAP-SERVERS>
+                                                    <SPRING_KAFKA_PRODUCER_BOOTSTRAP-SERVERS>192.168.99.101:9092</SPRING_KAFKA_PRODUCER_BOOTSTRAP-SERVERS>
+                                                    <SPRING_KAFKA_CONSUMER_BOOTSTRAP-SERVERS>192.168.99.101:9092</SPRING_KAFKA_CONSUMER_BOOTSTRAP-SERVERS>
                                                 </env>
                                             </run>
                                         </image>
